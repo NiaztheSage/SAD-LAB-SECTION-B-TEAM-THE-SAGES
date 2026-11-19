@@ -50,3 +50,29 @@ A web-based system that connects hospitals, donors, patients and doctors, so org
 14. Analytics Dashboard
 15. Research Repository
 16. Audit & Security
+
+## Suggested additions
+
+Consent records, ethics committee approval, waiting list, secure messaging, document management, appointments, identity verification, Bangla/English support, emergency alerts, reports and export.
+
+## Prototype scope
+
+| Component | Prototype |
+|---|---|
+| National hospitals | 3 fictional hospitals |
+| International hospitals | 2 fictional hospitals |
+| User roles | 5 core roles |
+| Organs | Kidney and Liver |
+| Donor types | Living and deceased-donor intention |
+| Matching | Basic kidney compatibility demo |
+| Paired exchange | Basic exchange cycle demo |
+| Referral | National and international |
+| Data | Synthetic demo data only |
+
+## Workflow
+
+Registration and login → Donor / Recipient registration → Hospital and doctor review → Matching support → Referral and coordination → Transplant → Follow-up
+
+## Status
+
+Early planning stage (Project Skeleton v2). No real patient data is used.
