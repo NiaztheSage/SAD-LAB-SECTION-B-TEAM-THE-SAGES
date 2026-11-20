@@ -1,7 +1,15 @@
 
 import './App.css'
+import { useState } from 'react'
+import Login from './Login'
 
 function App() {
+  const [showLogin, setShowLogin] = useState(false)
+
+if (showLogin) {
+  return <Login onBack={() => setShowLogin(false)} />
+}
+
   return (
     <div className="app">
       <nav className="navbar">
@@ -17,7 +25,12 @@ function App() {
           <a href="#contact">Contact</a>
         </div>
 
-        <button className="login-btn">Login</button>
+        <button
+  className="login-btn"
+  onClick={() => setShowLogin(true)}
+>
+  Login
+</button>
       </nav>
 
       <section className="hero" id="home">
