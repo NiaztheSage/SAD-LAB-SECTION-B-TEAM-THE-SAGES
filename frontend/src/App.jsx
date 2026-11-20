@@ -52,6 +52,74 @@ function App() {
         </p>
       </section>
 
+      <section className="services" id="services">
+        <div className="services-heading">
+          <p className="section-label">OUR SERVICES</p>
+          <h2>Supporting Every Step of Transplant Coordination</h2>
+          <p>
+            Our network helps connect people and healthcare institutions
+            through a coordinated organ donation and transplant process.
+          </p>
+        </div>
+
+        <div className="service-grid">
+          <div className="service-card">
+            <div className="service-icon">♡</div>
+            <h3>Donor Registry</h3>
+            <p>
+              A dedicated portal for donors to register and manage
+              their donation information.
+            </p>
+          </div>
+
+          <div className="service-card">
+            <div className="service-icon">+</div>
+            <h3>Recipient Registry</h3>
+            <p>
+              Helps recipients register and connect with authorized
+              healthcare professionals.
+            </p>
+          </div>
+
+          <div className="service-card">
+            <div className="service-icon">✚</div>
+            <h3>Hospital Network</h3>
+            <p>
+              Connects participating hospitals and their medical
+              professionals for case coordination.
+            </p>
+          </div>
+
+          <div className="service-card">
+            <div className="service-icon">⇄</div>
+            <h3>Matching Support</h3>
+            <p>
+              Provides compatibility suggestions to support
+              medical professionals in their decisions.
+            </p>
+          </div>
+
+          <div className="service-card">
+            <div className="service-icon">↗</div>
+            <h3>Referral Coordination</h3>
+            <p>
+              Supports coordination between national and
+              international transplant centers.
+            </p>
+          </div>
+
+          <div className="service-card">
+            <div className="service-icon">▤</div>
+            <h3>Follow-up Tracking</h3>
+            <p>
+              Helps authorized professionals maintain transplant
+              records and follow-up information.
+            </p>
+          </div>
+        </div>
+      </section>
+
+
       <footer id="contact">
         <p>© 2026 NI-ODTCN | Organ Donation & Transplant Coordination Network</p>
       </footer>
