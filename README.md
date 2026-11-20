@@ -1,5 +1,5 @@
 # SAD-LAB-SECTION-B-TEAM-THE-SAGES
-# Bangladesh National & International Organ Donation and Transplant Coordination Network
+# National & International Organ Donation and Transplant Coordination Network
 
 A web-based system that connects hospitals, donors, patients and doctors, so organ donation and transplants can be coordinated in one place.
 
