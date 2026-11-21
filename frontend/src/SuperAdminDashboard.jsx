@@ -69,6 +69,54 @@ const [hospitals, setHospitals] = useState([
   },
 ]);
 
+const [donors, setDonors] = useState([
+  {
+    id: "DNR-001",
+    name: "Ayesha Rahman",
+    organ: "Kidney",
+    registrationDate: "2026-10-15",
+    status: "Approved",
+  },
+  {
+    id: "DNR-002",
+    name: "Nusrat Jahan",
+    organ: "Liver",
+    registrationDate: "2026-10-20",
+    status: "Pending",
+  },
+  {
+    id: "DNR-003",
+    name: "Sadia Islam",
+    organ: "Kidney",
+    registrationDate: "2026-11-05",
+    status: "Under Review",
+  },
+]);
+
+const [recipients, setRecipients] = useState([
+  {
+    id: "REC-001",
+    name: "Mohammad Hasan",
+    organ: "Kidney",
+    registrationDate: "2026-10-18",
+    status: "Under Review",
+  },
+  {
+    id: "REC-002",
+    name: "Tanvir Ahmed",
+    organ: "Liver",
+    registrationDate: "2026-10-25",
+    status: "Registration Submitted",
+  },
+  {
+    id: "REC-003",
+    name: "Nusrat Jahan",
+    organ: "Kidney",
+    registrationDate: "2026-11-08",
+    status: "Under Review",
+  },
+]);
+
   const [notifications, setNotifications] = useState([
     {
       id: 1,
@@ -105,6 +153,27 @@ const [hospitals, setHospitals] = useState([
     )
   );
 }
+
+function updateDonorStatus(id, newStatus) {
+  setDonors((previous) =>
+    previous.map((donor) =>
+      donor.id === id
+        ? { ...donor, status: newStatus }
+        : donor
+    )
+  );
+}
+function updateRecipientStatus(id, newStatus) {
+  setRecipients((previous) =>
+    previous.map((recipient) =>
+      recipient.id === id
+        ? { ...recipient, status: newStatus }
+        : recipient
+    )
+  );
+}
+
+
 
 function updateUserStatus(id, newStatus) {
   setUsers((previous) =>
@@ -462,131 +531,266 @@ case "User Management":
     </>
   );
 
-      case "Donor Management":
+
         case "User Management":
+          return (
+            <>
+              <h2>User Management</h2>
+              <p>Manage all registered users of NI-ODTCN.</p>
+
+              <div className="admin-stats">
+                <div className="admin-stat-card">
+                  <h3>Total Users</h3>
+                  <h2>{users.length}</h2>
+                </div>
+
+                <div className="admin-stat-card">
+                  <h3>Active Users</h3>
+                  <h2>
+                    {users.filter((user) => user.status === "Active").length}
+                  </h2>
+                </div>
+
+                <div className="admin-stat-card">
+                  <h3>Pending Users</h3>
+                  <h2>
+                    {users.filter((user) => user.status === "Pending").length}
+                  </h2>
+                </div>
+              </div>
+
+              <div className="admin-content-card">
+                <h3>Registered Users</h3>
+
+                {users.map((user) => (
+                  <div className="admin-list-item" key={user.id}>
+                    <div>
+                      <h3>{user.name}</h3>
+                      <p>{user.id}</p>
+                      <p>Role: {user.role}</p>
+                      <p>Status: {user.status}</p>
+                    </div>
+
+                    <button
+                      onClick={() =>
+                        alert(
+                          `Name: ${user.name}\nRole: ${user.role}\nStatus: ${user.status}`
+                        )
+                      }
+                    >
+                      View Details
+                    </button>
+
+                    <select
+                      value={user.role}
+                      onChange={(e) =>
+                        updateUserRole(user.id, e.target.value)
+                      }
+                    >
+                      <option value="Donor">Donor</option>
+                      <option value="Recipient">Recipient</option>
+                      <option value="Medical Professional">
+                        Medical Professional
+                      </option>
+                      <option value="Hospital Admin">Hospital Admin</option>
+                      <option value="Super Admin">Super Admin</option>
+                    </select>
+
+                    <select
+                      value={user.status}
+                      onChange={(e) =>
+                        updateUserStatus(user.id, e.target.value)
+                      }
+                    >
+                      <option value="Active">Active</option>
+                      <option value="Pending">Pending</option>
+                    </select>
+
+                    <button onClick={() => deleteUser(user.id)}>
+                      Delete
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </>
+          );
+
+        
+case "Donor Management":
   return (
     <>
-      <h2>User Management</h2>
-      <p>Manage all registered users of NI-ODTCN.</p>
+      <h2>Donor Management</h2>
 
       <div className="admin-stats">
+        <div className="admin-stat-card">
+          <h3>Total Registered Donors</h3>
+          <h2>{donors.length}</h2>
+        </div>
+
+        <div className="admin-stat-card">
+          <h3>Approved Donors</h3>
+          <h2>
+            {donors.filter((donor) => donor.status === "Approved").length}
+          </h2>
+        </div>
+
+        <div className="admin-stat-card">
+          <h3>Pending Review</h3>
+          <h2>
+            {donors.filter((donor) => donor.status !== "Approved").length}
+          </h2>
+        </div>
+      </div>
+
+      <div className="admin-content-card">
+        <h3>Donor Registry</h3>
+
+        {donors.map((donor) => (
+          <div className="admin-content-card" key={donor.id}>
+            <h3>{donor.name}</h3>
+
+            <p>Donor ID: {donor.id}</p>
+            <p>Organ: {donor.organ}</p>
+            <p>Registration Date: {donor.registrationDate}</p>
+            <p>Status: {donor.status}</p>
+
+            <label>Update Status: </label>
+
+            <select
+              value={donor.status}
+              onChange={(e) =>
+                updateDonorStatus(donor.id, e.target.value)
+              }
+            >
+              <option value="Pending">Pending</option>
+              <option value="Under Review">Under Review</option>
+              <option value="Approved">Approved</option>
+              <option value="Rejected">Rejected</option>
+            </select>
+          </div>
+        ))}
+      </div>
+    </>
+  );
+
+
+        
+
+      
+case "Recipient Management":
+  return (
+    <>
+      <h2>Recipient Management</h2>
+
+      <div className="admin-stats">
+        <div className="admin-stat-card">
+          <h3>Total Registered Recipients</h3>
+          <h2>{recipients.length}</h2>
+        </div>
+
+        <div className="admin-stat-card">
+          <h3>Under Review</h3>
+          <h2>
+            {recipients.filter(
+              (recipient) => recipient.status === "Under Review"
+            ).length}
+          </h2>
+        </div>
+
+        <div className="admin-stat-card">
+          <h3>Registration Submitted</h3>
+          <h2>
+            {recipients.filter(
+              (recipient) => recipient.status === "Registration Submitted"
+            ).length}
+          </h2>
+        </div>
+      </div>
+
+      <div className="admin-content-card">
+        <h3>Recipient Registry</h3>
+
+        {recipients.map((recipient) => (
+          <div className="admin-content-card" key={recipient.id}>
+            <h3>{recipient.name}</h3>
+
+            <p>Recipient ID: {recipient.id}</p>
+            <p>Required Organ: {recipient.organ}</p>
+            <p>Registration Date: {recipient.registrationDate}</p>
+            <p>Status: {recipient.status}</p>
+
+            <label>Update Status: </label>
+
+            <select
+              value={recipient.status}
+              onChange={(e) =>
+                updateRecipientStatus(recipient.id, e.target.value)
+              }
+            >
+              <option value="Registration Submitted">
+                Registration Submitted
+              </option>
+              <option value="Under Review">Under Review</option>
+              <option value="Approved">Approved</option>
+              <option value="Rejected">Rejected</option>
+            </select>
+          </div>
+        ))}
+      </div>
+    </>
+  );
+
+
+
+case "System Statistics":
+  return (
+    <>
+      <h2>System Statistics</h2>
+
+      <div className="admin-stats">
+        <div className="admin-stat-card">
+          <h3>Total Hospitals</h3>
+          <h2>{hospitals.length}</h2>
+        </div>
+
         <div className="admin-stat-card">
           <h3>Total Users</h3>
           <h2>{users.length}</h2>
         </div>
 
         <div className="admin-stat-card">
-          <h3>Active Users</h3>
-          <h2>
-            {users.filter((user) => user.status === "Active").length}
-          </h2>
+          <h3>Total Donors</h3>
+          <h2>{donors.length}</h2>
         </div>
 
         <div className="admin-stat-card">
-          <h3>Pending Users</h3>
-          <h2>
-            {users.filter((user) => user.status === "Pending").length}
-          </h2>
+          <h3>Total Recipients</h3>
+          <h2>{recipients.length}</h2>
         </div>
       </div>
 
       <div className="admin-content-card">
-        <h3>Registered Users</h3>
+        <h3>Platform Statistics</h3>
 
-        {users.map((user) => (
-          <div className="admin-list-item" key={user.id}>
-            <div>
-              <h3>{user.name}</h3>
-              <p>{user.id}</p>
-              <p>Role: {user.role}</p>
-              <p>Status: {user.status}</p>
-            </div>
+        <p>Active Hospitals: {hospitals.filter((hospital) => hospital.status === "Active").length}</p>
 
-            <button
-              onClick={() =>
-                alert(
-                  `Name: ${user.name}\nRole: ${user.role}\nStatus: ${user.status}`
-                )
-              }
-            >
-              View Details
-            </button>
+        <p>Pending Hospitals: {hospitals.filter((hospital) => hospital.status === "Pending").length}</p>
 
-            <select
-              value={user.role}
-              onChange={(e) =>
-                updateUserRole(user.id, e.target.value)
-              }
-            >
-              <option value="Donor">Donor</option>
-              <option value="Recipient">Recipient</option>
-              <option value="Medical Professional">
-                Medical Professional
-              </option>
-              <option value="Hospital Admin">Hospital Admin</option>
-              <option value="Super Admin">Super Admin</option>
-            </select>
+        <p>Approved Donors: {donors.filter((donor) => donor.status === "Approved").length}</p>
 
-            <select
-              value={user.status}
-              onChange={(e) =>
-                updateUserStatus(user.id, e.target.value)
-              }
-            >
-              <option value="Active">Active</option>
-              <option value="Pending">Pending</option>
-            </select>
+        <p>Donors Under Review: {donors.filter((donor) => donor.status === "Under Review").length}</p>
 
-            <button
-              onClick={() => deleteUser(user.id)}
-            >
-              Delete
-            </button>
-          </div>
-        ))}
+        <p>Recipients Under Review: {recipients.filter((recipient) => recipient.status === "Under Review").length}</p>
+
+        <p>Total Medical Professionals: 45</p>
+
+        <p>Demo Transplant Records: 12</p>
+
+        <p>All statistics are fictional demo data.</p>
       </div>
     </>
   );
-        return (
-          <>
-            <h2>Donor Management</h2>
-            <div className="admin-content-card">
-              <h3>Donor Registry</h3>
-              <p>Total Registered Donors: 120</p>
-              <p>Active Donors: 95</p>
-              <p>Pending Review: 25</p>
-            </div>
-          </>
-        );
 
-      case "Recipient Management":
-        return (
-          <>
-            <h2>Recipient Management</h2>
-            <div className="admin-content-card">
-              <h3>Recipient Registry</h3>
-              <p>Total Registered Recipients: 85</p>
-              <p>Under Review: 40</p>
-              <p>Registration Submitted: 45</p>
-            </div>
-          </>
-        );
-
-      case "System Statistics":
-        return (
-          <>
-            <h2>System Statistics</h2>
-            <div className="admin-content-card">
-              <h3>Platform Statistics</h3>
-              <p>Total Hospitals: {hospitals.length}</p>
-              <p>Total Donors: 120</p>
-              <p>Total Recipients: 85</p>
-              <p>Total Medical Professionals: 45</p>
-              <p>Demo Transplant Records: 12</p>
-              <p>All statistics are fictional demo data.</p>
-            </div>
-          </>
-        );
 
       case "Notifications":
         return (
