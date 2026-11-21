@@ -48,26 +48,26 @@ const [hospitals, setHospitals] = useState([
     },
   ]);
 
-  const users = [
-    {
-      id: "USR-001",
-      name: "Ayesha Rahman",
-      role: "Donor",
-      status: "Active",
-    },
-    {
-      id: "USR-002",
-      name: "Mohammad Hasan",
-      role: "Recipient",
-      status: "Active",
-    },
-    {
-      id: "USR-003",
-      name: "Dr. Farhan Ahmed",
-      role: "Medical Professional",
-      status: "Pending",
-    },
-  ];
+  const [users, setUsers] = useState([
+  {
+    id: "USR-001",
+    name: "Ayesha Rahman",
+    role: "Donor",
+    status: "Active",
+  },
+  {
+    id: "USR-002",
+    name: "Mohammad Hasan",
+    role: "Recipient",
+    status: "Active",
+  },
+  {
+    id: "USR-003",
+    name: "Dr. Farhan Ahmed",
+    role: "Medical Professional",
+    status: "Pending",
+  },
+]);
 
   const [notifications, setNotifications] = useState([
     {
@@ -97,6 +97,36 @@ const [hospitals, setHospitals] = useState([
       )
     );
   }
+
+  function updateUserRole(id, newRole) {
+  setUsers((previous) =>
+    previous.map((user) =>
+      user.id === id ? { ...user, role: newRole } : user
+    )
+  );
+}
+
+function updateUserStatus(id, newStatus) {
+  setUsers((previous) =>
+    previous.map((user) =>
+      user.id === id ? { ...user, status: newStatus } : user
+    )
+  );
+}
+
+function deleteUser(id) {
+  const confirmDelete = window.confirm(
+    "Are you sure you want to delete this user?"
+  );
+
+  if (confirmDelete) {
+    setUsers((previous) =>
+      previous.filter((user) => user.id !== id)
+    );
+
+    alert("User deleted successfully!");
+  }
+}
 
   function renderContent() {
     switch (activeSection) {
@@ -348,35 +378,175 @@ const [hospitals, setHospitals] = useState([
           </>
         );
 
-      case "User Management":
-        return (
-          <>
-            <h2>User Management</h2>
+      
+case "User Management":
+  return (
+    <>
+      <h2>User Management</h2>
+      <p>Manage all registered users of NI-ODTCN.</p>
 
-            <div className="admin-content-card">
-              {users.map((user) => (
-                <div className="admin-list-item" key={user.id}>
-                  <div>
-                    <h3>{user.name}</h3>
-                    <p>{user.id}</p>
-                    <p>Role: {user.role}</p>
-                    <p>Status: {user.status}</p>
-                  </div>
+      <div className="admin-stats">
+        <div className="admin-stat-card">
+          <h3>Total Users</h3>
+          <h2>{users.length}</h2>
+        </div>
 
-                  <button
-                    onClick={() =>
-                      alert(`Demo User: ${user.name}`)
-                    }
-                  >
-                    View Details
-                  </button>
-                </div>
-              ))}
+        <div className="admin-stat-card">
+          <h3>Active Users</h3>
+          <h2>
+            {users.filter((user) => user.status === "Active").length}
+          </h2>
+        </div>
+
+        <div className="admin-stat-card">
+          <h3>Pending Users</h3>
+          <h2>
+            {users.filter((user) => user.status === "Pending").length}
+          </h2>
+        </div>
+      </div>
+
+      <div className="admin-content-card">
+        <h3>Registered Users</h3>
+
+        {users.map((user) => (
+          <div className="admin-list-item" key={user.id}>
+            <div>
+              <h3>{user.name}</h3>
+              <p>{user.id}</p>
+              <p>Role: {user.role}</p>
+              <p>Status: {user.status}</p>
             </div>
-          </>
-        );
+
+            <button
+              onClick={() =>
+                alert(
+                  `Name: ${user.name}\nRole: ${user.role}\nStatus: ${user.status}`
+                )
+              }
+            >
+              View Details
+            </button>
+
+            <select
+              value={user.role}
+              onChange={(e) =>
+                updateUserRole(user.id, e.target.value)
+              }
+            >
+              <option value="Donor">Donor</option>
+              <option value="Recipient">Recipient</option>
+              <option value="Medical Professional">
+                Medical Professional
+              </option>
+              <option value="Hospital Admin">Hospital Admin</option>
+              <option value="Super Admin">Super Admin</option>
+            </select>
+
+            <select
+              value={user.status}
+              onChange={(e) =>
+                updateUserStatus(user.id, e.target.value)
+              }
+            >
+              <option value="Active">Active</option>
+              <option value="Pending">Pending</option>
+            </select>
+
+            <button onClick={() => deleteUser(user.id)}>
+              Delete
+            </button>
+          </div>
+        ))}
+      </div>
+    </>
+  );
 
       case "Donor Management":
+        case "User Management":
+  return (
+    <>
+      <h2>User Management</h2>
+      <p>Manage all registered users of NI-ODTCN.</p>
+
+      <div className="admin-stats">
+        <div className="admin-stat-card">
+          <h3>Total Users</h3>
+          <h2>{users.length}</h2>
+        </div>
+
+        <div className="admin-stat-card">
+          <h3>Active Users</h3>
+          <h2>
+            {users.filter((user) => user.status === "Active").length}
+          </h2>
+        </div>
+
+        <div className="admin-stat-card">
+          <h3>Pending Users</h3>
+          <h2>
+            {users.filter((user) => user.status === "Pending").length}
+          </h2>
+        </div>
+      </div>
+
+      <div className="admin-content-card">
+        <h3>Registered Users</h3>
+
+        {users.map((user) => (
+          <div className="admin-list-item" key={user.id}>
+            <div>
+              <h3>{user.name}</h3>
+              <p>{user.id}</p>
+              <p>Role: {user.role}</p>
+              <p>Status: {user.status}</p>
+            </div>
+
+            <button
+              onClick={() =>
+                alert(
+                  `Name: ${user.name}\nRole: ${user.role}\nStatus: ${user.status}`
+                )
+              }
+            >
+              View Details
+            </button>
+
+            <select
+              value={user.role}
+              onChange={(e) =>
+                updateUserRole(user.id, e.target.value)
+              }
+            >
+              <option value="Donor">Donor</option>
+              <option value="Recipient">Recipient</option>
+              <option value="Medical Professional">
+                Medical Professional
+              </option>
+              <option value="Hospital Admin">Hospital Admin</option>
+              <option value="Super Admin">Super Admin</option>
+            </select>
+
+            <select
+              value={user.status}
+              onChange={(e) =>
+                updateUserStatus(user.id, e.target.value)
+              }
+            >
+              <option value="Active">Active</option>
+              <option value="Pending">Pending</option>
+            </select>
+
+            <button
+              onClick={() => deleteUser(user.id)}
+            >
+              Delete
+            </button>
+          </div>
+        ))}
+      </div>
+    </>
+  );
         return (
           <>
             <h2>Donor Management</h2>
