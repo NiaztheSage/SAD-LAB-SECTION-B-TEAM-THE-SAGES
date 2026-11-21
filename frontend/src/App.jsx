@@ -2,12 +2,37 @@
 import './App.css'
 import { useState } from 'react'
 import Login from './Login'
+import Register from './Register'
 
 function App() {
   const [showLogin, setShowLogin] = useState(false)
+  const [showRegister, setShowRegister] = useState(false)
+  const [accountType, setAccountType] = useState("Donor")
 
 if (showLogin) {
-  return <Login onBack={() => setShowLogin(false)} />
+  return (
+    <Login
+      onBack={() => setShowLogin(false)}
+      onRegister={() => {
+        setShowLogin(false)
+        setAccountType("Donor")
+        setShowRegister(true)
+      }}
+    />
+  )
+}
+
+if (showRegister) {
+  return (
+    <Register
+      initialAccountType={accountType}
+      onBack={() => setShowRegister(false)}
+      onLogin={() => {
+        setShowRegister(false)
+        setShowLogin(true)
+      }}
+    />
+  )
 }
 
   return (
@@ -50,8 +75,24 @@ if (showLogin) {
           </p>
 
           <div className="hero-buttons">
-            <button className="primary-btn">Register as Donor</button>
-            <button className="secondary-btn">Register as Recipient</button>
+            <button
+  className="primary-btn"
+  onClick={() => {
+    setAccountType("Donor")
+    setShowRegister(true)
+  }}
+>
+  Register as Donor
+</button>
+            <button
+  className="secondary-btn"
+  onClick={() => {
+    setAccountType("Recipient")
+    setShowRegister(true)
+  }}
+>
+  Register as Recipient
+</button>
           </div>
         </div>
       </section>

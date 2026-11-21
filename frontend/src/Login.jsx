@@ -2,7 +2,7 @@
 import { useState } from "react";
 import "./Login.css";
 
-function Login({ onBack }) {
+function Login({ onBack, onRegister }) {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
@@ -71,9 +71,12 @@ function Login({ onBack }) {
             </button>
           </form>
 
-          <p className="register-link">
-            Don't have an account? <a href="#register">Register Now</a>
-          </p>
+         <p className="register-link">
+  Don't have an account?{" "}
+  <button type="button" onClick={onRegister}>
+    Register Now
+  </button>
+</p>
         </div>
 
         <p className="login-footer">
