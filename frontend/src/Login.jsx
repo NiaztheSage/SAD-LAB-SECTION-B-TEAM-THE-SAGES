@@ -2,8 +2,17 @@
 import { useState } from "react";
 import "./Login.css";
 
-function Login({ onBack, onRegister, onForgotPassword }) {
+function Login({ onBack, onRegister, onForgotPassword, onLogin }) {
   const [showPassword, setShowPassword] = useState(false);
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    onLogin();
+  }
+  function handleSubmit(e) {
+  e.preventDefault();
+  onLogin();
+}
 
   return (
     <div className="login-page">
@@ -27,7 +36,7 @@ function Login({ onBack, onRegister, onForgotPassword }) {
             Sign in to continue to your account.
           </p>
 
-          <form>
+          <form onSubmit={handleSubmit}>
             <div className="form-group">
               <label>Email Address</label>
               <input

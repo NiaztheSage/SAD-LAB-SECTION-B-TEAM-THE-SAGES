@@ -4,13 +4,23 @@ import { useState } from 'react'
 import Login from './Login'
 import Register from './Register'
 import ForgotPassword from './ForgotPassword'
+import DonorDashboard from './DonorDashboard'
 
 function App() {
   const [showLogin, setShowLogin] = useState(false)
   const [showRegister, setShowRegister] = useState(false)
   const [accountType, setAccountType] = useState("Donor")
   const [showForgotPassword, setShowForgotPassword] = useState(false)
+  const [showDonorDashboard, setShowDonorDashboard] = useState(false)
 
+
+ if (showDonorDashboard) {
+  return (
+    <DonorDashboard
+      onLogout={() => setShowDonorDashboard(false)}
+    />
+  )
+}
 if (showForgotPassword) {
   return (
     <ForgotPassword
@@ -30,6 +40,10 @@ if (showForgotPassword) {
         setAccountType("Donor")
         setShowRegister(true)
       }}
+      onLogin={() => {
+  setShowLogin(false)
+  setShowDonorDashboard(true)
+}}
       onForgotPassword={() => {
   setShowLogin(false)
   setShowForgotPassword(true)
