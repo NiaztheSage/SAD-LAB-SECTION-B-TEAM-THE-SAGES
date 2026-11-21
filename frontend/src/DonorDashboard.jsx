@@ -14,6 +14,69 @@ function DonorDashboard({ onLogout }) {
 
   const [isEditingProfile, setIsEditingProfile] = useState(false);
 
+  const donationHistory = [
+    {
+      id: "DON-2026-001",
+      date: "15 October 2026",
+      organ: "Kidney",
+      hospital: "Dhaka Central Hospital",
+      status: "Registered",
+    },
+    {
+      id: "DON-2026-002",
+      date: "05 November 2026",
+      organ: "Liver",
+      hospital: "National Medical Center",
+      status: "Under Review",
+    },
+    {
+      id: "DON-2026-003",
+      date: "18 November 2026",
+      organ: "Kidney",
+      hospital: "Green Life Hospital",
+      status: "Pending",
+    },
+  ];
+
+  const [notifications, setNotifications] = useState([
+  {
+    id: 1,
+    title: "Welcome to NI-ODTCN!",
+    message: "Thank you for joining our donor community.",
+    date: "21 November 2026",
+    isRead: false,
+  },
+  {
+    id: 2,
+    title: "Registration Update",
+    message: "Your donor registration is currently under review.",
+    date: "20 November 2026",
+    isRead: false,
+  },
+  {
+    id: 3,
+    title: "Profile Reminder",
+    message: "Please keep your contact information updated.",
+    date: "19 November 2026",
+    isRead: true,
+  },
+]);
+
+function markAsRead(id) {
+  setNotifications((previous) =>
+    previous.map((notification) =>
+      notification.id === id
+        ? { ...notification, isRead: true }
+        : notification
+    )
+  );
+}
+
+function clearAllNotifications() {
+  setNotifications([]);
+}
+
+
   return (
 
     <div className="donor-dashboard">
@@ -174,33 +237,110 @@ function DonorDashboard({ onLogout }) {
           </div>
         </section>
 
+      
         {/* Donation History */}
         <section className="donor-section" id="history">
           <h2>Donation History</h2>
+          <p className="history-subtitle">
+            View your donation registration records.
+          </p>
 
-          <div className="donor-empty-card">
-            <span>📂</span>
-            <h3>No Donation Records Yet</h3>
-            <p>
-              Your donation history will appear here when records are available.
-            </p>
+          <div className="donation-history-list">
+            {donationHistory.map((record) => (
+              <div className="donation-record-card" key={record.id}>
+                <div className="donation-record-header">
+                  <h3>{record.organ} Donation</h3>
+                  <span className="donation-status">
+                    {record.status}
+                  </span>
+                </div>
+
+                <div className="donation-record-info">
+                  <p><strong>Record ID:</strong> {record.id}</p>
+                  <p><strong>Date:</strong> {record.date}</p>
+                  <p><strong>Hospital:</strong> {record.hospital}</p>
+                </div>
+
+                <button
+                  className="donation-details-btn"
+                  onClick={() =>
+                    alert(
+                      `Record ID: ${record.id}\nOrgan: ${record.organ}\nDate: ${record.date}\nHospital: ${record.hospital}\nStatus: ${record.status}`
+                    )
+                  }
+                >
+                  View Details
+                </button>
+              </div>
+            ))}
           </div>
+
+          <p className="demo-record-note">
+            These are fictional demonstration records, not actual donation records.
+          </p>
         </section>
+
 
         {/* Notifications */}
         <section className="donor-section" id="notifications">
-          <h2>Notifications</h2>
-
-          <div className="donor-notification">
-            <span>🔔</span>
+          <div className="notification-heading">
             <div>
-              <h3>Welcome to NI-ODTCN!</h3>
-              <p>
-                Thank you for joining our donor community.
-              </p>
+              <h2>Notifications</h2>
+              <p>You have {
+                notifications.filter((item) => !item.isRead).length
+              } unread notifications.</p>
             </div>
+
+            <button
+              className="clear-notifications-btn"
+              onClick={clearAllNotifications}
+              disabled={notifications.length === 0}
+            >
+              Clear All
+            </button>
+          </div>
+
+          <div className="notification-list">
+            {notifications.length === 0 ? (
+              <div className="donor-empty-card">
+                <span>🔔</span>
+                <h3>No Notifications</h3>
+                <p>You are all caught up!</p>
+              </div>
+            ) : (
+              notifications.map((notification) => (
+                <div
+                  className={`notification-item ${
+                    notification.isRead ? "read" : "unread"
+                  }`}
+                  key={notification.id}
+                >
+                  <span className="notification-icon">🔔</span>
+
+                  <div className="notification-content">
+                    <h3>{notification.title}</h3>
+                    <p>{notification.message}</p>
+                    <small>{notification.date}</small>
+                  </div>
+
+                  {!notification.isRead && (
+                    <button
+                      className="mark-read-btn"
+                      onClick={() => markAsRead(notification.id)}
+                    >
+                      Mark as Read
+                    </button>
+                  )}
+
+                  {notification.isRead && (
+                    <span className="read-label">Read</span>
+                  )}
+                </div>
+              ))
+            )}
           </div>
         </section>
+
 
       </main>
     </div>
