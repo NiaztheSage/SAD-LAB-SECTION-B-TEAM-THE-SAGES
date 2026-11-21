@@ -1,8 +1,21 @@
 
+
 import "./DonorDashboard.css";
+import { useState } from "react";
+import EditDonorProfile from "./EditDonorProfile";
 
 function DonorDashboard({ onLogout }) {
+  const [donor, setDonor] = useState({
+    fullName: "Ayesha Rahman",
+    email: "ayesha@example.com",
+    phone: "01XXXXXXXXX",
+    location: "Dhaka, Bangladesh",
+  });
+
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
+
   return (
+
     <div className="donor-dashboard">
 
       {/* Sidebar */}
@@ -85,23 +98,51 @@ function DonorDashboard({ onLogout }) {
           </div>
         </section>
 
+       
+
         {/* Profile */}
         <section className="donor-section" id="profile">
           <h2>My Profile</h2>
 
-          <div className="donor-profile-card">
-            <div className="profile-avatar">AR</div>
+          {isEditingProfile ? (
+            <EditDonorProfile
+              donor={donor}
+              onSave={(updatedDonor) => {
+                setDonor(updatedDonor);
+                setIsEditingProfile(false);
+                alert("Profile updated successfully!");
+              }}
+              onCancel={() => setIsEditingProfile(false)}
+            />
+          ) : (
+            <div className="donor-profile-card">
+              <div className="profile-avatar">
+                {donor.fullName
+                  .split(" ")
+                  .map((word) => word[0])
+                  .join("")
+                  .toUpperCase()}
+              </div>
 
-            <div className="profile-details">
-              <h3>Ayesha Rahman</h3>
-              <p>Registered Donor</p>
-              <div className="profile-info">
-                <span>Email: ayesha@example.com</span>
-                <span>Phone: 01XXXXXXXXX</span>
-                <span>Location: Dhaka, Bangladesh</span>
+              <div className="profile-details">
+                <h3>{donor.fullName}</h3>
+                <p>Registered Donor</p>
+
+                <div className="profile-info">
+                  <span>Email: {donor.email}</span>
+                  <span>Phone: {donor.phone}</span>
+                  <span>Location: {donor.location}</span>
+                </div>
+
+                <button
+                  className="edit-profile-btn"
+                  onClick={() => setIsEditingProfile(true)}
+                >
+                  ✏️ Edit Profile
+                </button>
               </div>
             </div>
-          </div>
+          )}
         </section>
 
         {/* Registration */}

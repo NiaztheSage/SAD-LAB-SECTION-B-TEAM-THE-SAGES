@@ -379,3 +379,23 @@ html {
   background: #b91c1c;
   transform: translateY(-2px);
 }
+
+
+/* Edit Profile Button */
+.edit-profile-btn {
+  margin-top: 20px;
+  padding: 11px 22px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.edit-profile-btn:hover {
+  background: #1d4ed8;
+  transform: translateY(-2px);
+}
