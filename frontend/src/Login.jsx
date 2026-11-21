@@ -5,11 +5,7 @@ import "./Login.css";
 function Login({ onBack, onRegister, onForgotPassword, onLogin }) {
   const [showPassword, setShowPassword] = useState(false);
 
-  function handleSubmit(e) {
-    e.preventDefault();
-    onLogin();
-  }
-  function handleSubmit(e) {
+function handleSubmit(e) {
   e.preventDefault();
   onLogin();
 }

@@ -5,6 +5,7 @@ import Login from './Login'
 import Register from './Register'
 import ForgotPassword from './ForgotPassword'
 import DonorDashboard from './DonorDashboard'
+import RecipientDashboard from './RecipientDashboard'
 
 function App() {
   const [showLogin, setShowLogin] = useState(false)
@@ -12,12 +13,22 @@ function App() {
   const [accountType, setAccountType] = useState("Donor")
   const [showForgotPassword, setShowForgotPassword] = useState(false)
   const [showDonorDashboard, setShowDonorDashboard] = useState(false)
+  const [showRecipientDashboard, setShowRecipientDashboard] = useState(false)
 
 
  if (showDonorDashboard) {
   return (
     <DonorDashboard
       onLogout={() => setShowDonorDashboard(false)}
+    />
+  )
+}
+
+
+if (showRecipientDashboard) {
+  return (
+    <RecipientDashboard
+      onLogout={() => setShowRecipientDashboard(false)}
     />
   )
 }
@@ -40,9 +51,14 @@ if (showForgotPassword) {
         setAccountType("Donor")
         setShowRegister(true)
       }}
-      onLogin={() => {
+onLogin={() => {
   setShowLogin(false)
-  setShowDonorDashboard(true)
+
+  if (accountType === "Recipient") {
+    setShowRecipientDashboard(true)
+  } else {
+    setShowDonorDashboard(true)
+  }
 }}
       onForgotPassword={() => {
   setShowLogin(false)
@@ -57,11 +73,12 @@ if (showRegister) {
   return (
     <Register
       initialAccountType={accountType}
+      onAccountTypeChange={(type) => setAccountType(type)}
       onBack={() => setShowRegister(false)}
-      onLogin={() => {
-        setShowRegister(false)
-        setShowLogin(true)
-      }}
+onLogin={() => {
+  setShowRegister(false)
+  setShowLogin(true)
+}}
     />
   )
 }

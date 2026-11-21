@@ -3,7 +3,12 @@ import { useState } from "react";
 import "./Register.css";
 import "./Login.css";
 
-function Register({ onBack, onLogin, initialAccountType }) {
+function Register({
+  onBack,
+  onLogin,
+  initialAccountType,
+  onAccountTypeChange,
+}) {    
   const [accountType, setAccountType] = useState(initialAccountType || "Donor");
   const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState("");
@@ -92,9 +97,12 @@ function handleSubmit(e) {
             <label>Account Type</label>
 
             <select
-              value={accountType}
-              onChange={(e) => setAccountType(e.target.value)}
-            >
+  value={accountType}
+  onChange={(e) => {
+    setAccountType(e.target.value);
+    onAccountTypeChange(e.target.value);
+  }}
+>
               <option value="Donor">Donor</option>
               <option value="Recipient">Recipient</option>
             </select>
