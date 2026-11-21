@@ -4,10 +4,12 @@ import "./Login.css";
 
 function Login({ onBack, onRegister, onForgotPassword, onLogin }) {
   const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
 function handleSubmit(e) {
   e.preventDefault();
-  onLogin();
+  onLogin(email, password);
 }
 
   return (
@@ -35,22 +37,26 @@ function handleSubmit(e) {
           <form onSubmit={handleSubmit}>
             <div className="form-group">
               <label>Email Address</label>
-              <input
-                type="email"
-                placeholder="Enter your email address"
-                required
-              />
+             <input
+  type="email"
+  placeholder="Enter your email address"
+  value={email}
+  onChange={(e) => setEmail(e.target.value)}
+  required
+/> 
             </div>
 
             <div className="form-group">
               <label>Password</label>
 
               <div className="password-field">
-                <input
-                  type={showPassword ? "text" : "password"}
-                  placeholder="Enter your password"
-                  required
-                />
+               <input
+  type={showPassword ? "text" : "password"}
+  placeholder="Enter your password"
+  value={password}
+  onChange={(e) => setPassword(e.target.value)}
+  required
+/>
 
                 <button
                   type="button"

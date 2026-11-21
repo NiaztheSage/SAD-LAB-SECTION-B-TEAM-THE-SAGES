@@ -6,6 +6,7 @@ import Register from './Register'
 import ForgotPassword from './ForgotPassword'
 import DonorDashboard from './DonorDashboard'
 import RecipientDashboard from './RecipientDashboard'
+import SuperAdminDashboard from './SuperAdminDashboard'
 
 function App() {
   const [showLogin, setShowLogin] = useState(false)
@@ -14,8 +15,15 @@ function App() {
   const [showForgotPassword, setShowForgotPassword] = useState(false)
   const [showDonorDashboard, setShowDonorDashboard] = useState(false)
   const [showRecipientDashboard, setShowRecipientDashboard] = useState(false)
+  const [showSuperAdminDashboard, setShowSuperAdminDashboard] = useState(false)
 
-
+if (showSuperAdminDashboard) {
+  return (
+    <SuperAdminDashboard
+      onLogout={() => setShowSuperAdminDashboard(false)}
+    />
+  )
+}
  if (showDonorDashboard) {
   return (
     <DonorDashboard
@@ -51,13 +59,23 @@ if (showForgotPassword) {
         setAccountType("Donor")
         setShowRegister(true)
       }}
-onLogin={() => {
-  setShowLogin(false)
-
-  if (accountType === "Recipient") {
-    setShowRecipientDashboard(true)
+onLogin={(email, password) => {
+  if (
+    email === "admin@niodtcn.com" &&
+    password === "Admin@12345"
+  ) {
+    setShowLogin(false)
+    setShowSuperAdminDashboard(true)
+  } else if (email === "admin@niodtcn.com") {
+    alert("Invalid Super Admin email or password!")
   } else {
-    setShowDonorDashboard(true)
+    setShowLogin(false)
+
+    if (accountType === "Recipient") {
+      setShowRecipientDashboard(true)
+    } else {
+      setShowDonorDashboard(true)
+    }
   }
 }}
       onForgotPassword={() => {
