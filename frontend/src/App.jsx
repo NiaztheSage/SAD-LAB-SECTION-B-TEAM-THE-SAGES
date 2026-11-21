@@ -3,13 +3,25 @@ import './App.css'
 import { useState } from 'react'
 import Login from './Login'
 import Register from './Register'
+import ForgotPassword from './ForgotPassword'
 
 function App() {
   const [showLogin, setShowLogin] = useState(false)
   const [showRegister, setShowRegister] = useState(false)
   const [accountType, setAccountType] = useState("Donor")
+  const [showForgotPassword, setShowForgotPassword] = useState(false)
 
-if (showLogin) {
+if (showForgotPassword) {
+  return (
+    <ForgotPassword
+      onBack={() => {
+        setShowForgotPassword(false)
+        setShowLogin(true)
+      }}
+    />
+  )
+}
+  if (showLogin) {
   return (
     <Login
       onBack={() => setShowLogin(false)}
@@ -18,7 +30,12 @@ if (showLogin) {
         setAccountType("Donor")
         setShowRegister(true)
       }}
+      onForgotPassword={() => {
+  setShowLogin(false)
+  setShowForgotPassword(true)
+}}
     />
+
   )
 }
 

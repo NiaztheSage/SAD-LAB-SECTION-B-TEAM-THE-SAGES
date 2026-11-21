@@ -2,7 +2,7 @@
 import { useState } from "react";
 import "./Login.css";
 
-function Login({ onBack, onRegister }) {
+function Login({ onBack, onRegister, onForgotPassword }) {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
@@ -63,7 +63,13 @@ function Login({ onBack, onRegister }) {
                 Remember me
               </label>
 
-              <a href="#forgot-password">Forgot Password?</a>
+             <button
+  type="button"
+  className="forgot-password-link"
+  onClick={onForgotPassword}
+>
+  Forgot Password?
+</button>
             </div>
 
             <button type="submit" className="login-button">
