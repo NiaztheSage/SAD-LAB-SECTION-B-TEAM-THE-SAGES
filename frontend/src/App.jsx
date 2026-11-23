@@ -53,6 +53,8 @@ if (showForgotPassword) {
   if (showLogin) {
   return (
     <Login
+      accountType={accountType}
+      onAccountTypeChange={setAccountType}
       onBack={() => setShowLogin(false)}
       onRegister={() => {
         setShowLogin(false)

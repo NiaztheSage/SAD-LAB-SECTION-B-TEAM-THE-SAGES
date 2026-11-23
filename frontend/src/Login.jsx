@@ -2,7 +2,14 @@
 import { useState } from "react";
 import "./Login.css";
 
-function Login({ onBack, onRegister, onForgotPassword, onLogin }) {
+function Login({
+  onBack,
+  onRegister,
+  onForgotPassword,
+  onLogin,
+  accountType,
+  onAccountTypeChange,
+}) {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -30,6 +37,16 @@ function handleSubmit(e) {
 
         <div className="login-form">
           <h2>Welcome Back!</h2>
+          <div className="form-group">
+  <label>Login As</label>
+  <select
+    value={accountType}
+    onChange={(e) => onAccountTypeChange(e.target.value)}
+  >
+    <option value="Donor">Donor</option>
+    <option value="Recipient">Recipient</option>
+  </select>
+</div>
           <p className="login-subtitle">
             Sign in to continue to your account.
           </p>
