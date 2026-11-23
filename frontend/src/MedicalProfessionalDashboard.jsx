@@ -123,7 +123,40 @@ const [pkePairs, setPkePairs] = useState([
     status: "Registered",
     compatibility: "Not Evaluated",
   },
+
+
 ]);
+
+const [referrals, setReferrals] = useState([
+  {
+    id: "REF-001",
+    hospital: "National Medical Center",
+    type: "National",
+    organ: "Kidney",
+    recipient: "Demo Recipient A",
+    reason: "Specialized transplant evaluation",
+    status: "Under Review",
+  },
+  {
+    id: "REF-002",
+    hospital: "International Partner Hospital",
+    type: "International",
+    organ: "Liver",
+    recipient: "Demo Recipient B",
+    reason: "Advanced specialist consultation",
+    status: "Pending",
+  },
+]);
+
+function updateReferralStatus(id, status) {
+  setReferrals((previous) =>
+    previous.map((referral) =>
+      referral.id === id
+        ? { ...referral, status }
+        : referral
+    )
+  );
+}
 
 function updatePKEStatus(id, field, value) {
   setPkePairs((previous) =>
@@ -602,21 +635,80 @@ function updatePKEStatus(id, field, value) {
           </>
         );
 
-      case "Referrals":
-        return (
-          <>
-            <h2>Hospital Referrals</h2>
-            <div className="medical-pro-card">
-              <p>REF-001 — National Medical Center</p>
-              <p>Referral Type: National</p>
-              <p>Status: Under Review</p>
-              <hr />
-              <p>REF-002 — International Partner Hospital</p>
-              <p>Referral Type: International</p>
-              <p>Status: Pending</p>
-            </div>
-          </>
-        );
+      
+case "Referrals":
+  return (
+    <>
+      <h2>National & International Referrals</h2>
+      <p>
+        Monitor referral requests between national and
+        international transplant hospitals.
+      </p>
+
+      <div className="medical-pro-stats">
+        <div className="medical-pro-stat">
+          <h3>{referrals.length}</h3>
+          <p>Total Referrals</p>
+        </div>
+
+        <div className="medical-pro-stat">
+          <h3>
+            {referrals.filter(
+              (r) => r.type === "National"
+            ).length}
+          </h3>
+          <p>National Referrals</p>
+        </div>
+
+        <div className="medical-pro-stat">
+          <h3>
+            {referrals.filter(
+              (r) => r.type === "International"
+            ).length}
+          </h3>
+          <p>International Referrals</p>
+        </div>
+      </div>
+
+      {referrals.map((referral) => (
+        <div className="medical-pro-card" key={referral.id}>
+          <h3>{referral.id}</h3>
+
+          <p><strong>Receiving Hospital:</strong> {referral.hospital}</p>
+          <p><strong>Referral Type:</strong> {referral.type}</p>
+          <p><strong>Organ:</strong> {referral.organ}</p>
+          <p><strong>Recipient:</strong> {referral.recipient}</p>
+          <p><strong>Referral Reason:</strong> {referral.reason}</p>
+
+          <label>Referral Status</label>
+          <select
+            value={referral.status}
+            onChange={(e) =>
+              updateReferralStatus(
+                referral.id,
+                e.target.value
+              )
+            }
+          >
+            <option>Pending</option>
+            <option>Under Review</option>
+            <option>Additional Information Required</option>
+            <option>Approved for Referral</option>
+            <option>On Hold</option>
+            <option>Completed</option>
+          </select>
+        </div>
+      ))}
+
+      <p className="medical-pro-warning">
+        Referral approval and cross-border transplant decisions
+        require authorized hospital and clinical specialist review.
+        This prototype does not perform actual patient transfers
+        or medical approvals.
+      </p>
+    </>
+  );
+
 
       case "Notifications":
         return (
