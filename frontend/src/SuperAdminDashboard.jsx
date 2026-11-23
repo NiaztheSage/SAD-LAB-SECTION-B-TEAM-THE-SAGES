@@ -9,6 +9,7 @@ function SuperAdminDashboard({ onLogout }) {
   const [editHospitalData, setEditHospitalData] = useState({
   name: "",
   location: "",
+  type: "National",
 });
 
 
@@ -27,26 +28,44 @@ function SuperAdminDashboard({ onLogout }) {
     "Notifications",
   ];
 
+
 const [hospitals, setHospitals] = useState([
-    {
-      id: "HOS-001",
-      name: "Dhaka Central Hospital",
-      location: "Dhaka, Bangladesh",
-      status: "Active",
-    },
-    {
-      id: "HOS-002",
-      name: "National Medical Center",
-      location: "Chattogram, Bangladesh",
-      status: "Active",
-    },
-    {
-      id: "HOS-003",
-      name: "Green Life Hospital",
-      location: "Sylhet, Bangladesh",
-      status: "Pending",
-    },
-  ]);
+  {
+    id: "HOS-001",
+    name: "Dhaka Central Hospital",
+    location: "Dhaka, Bangladesh",
+    type: "National",
+    status: "Active",
+  },
+  {
+    id: "HOS-002",
+    name: "National Medical Center",
+    location: "Chattogram, Bangladesh",
+    type: "National",
+    status: "Active",
+  },
+  {
+    id: "HOS-003",
+    name: "Green Life Hospital",
+    location: "Sylhet, Bangladesh",
+    type: "National",
+    status: "Pending",
+  },
+  {
+    id: "HOS-004",
+    name: "Asia-Pacific Transplant Partner Hospital",
+    location: "Singapore",
+    type: "International",
+    status: "Active",
+  },
+  {
+    id: "HOS-005",
+    name: "Global Medical Transplant Centre",
+    location: "Kuala Lumpur, Malaysia",
+    type: "International",
+    status: "Active",
+  },
+]);
 
   const [users, setUsers] = useState([
   {
@@ -210,6 +229,24 @@ function deleteUser(id) {
                 <h3>Total Hospitals</h3>
                 <h2>{hospitals.length}</h2>
               </div>
+              <div className="admin-stat-card">
+  <h3>National Hospitals</h3>
+  <h2>
+    {hospitals.filter(
+      (hospital) => hospital.type === "National"
+    ).length}
+  </h2>
+</div>
+
+<div className="admin-stat-card">
+  <h3>International Hospitals</h3>
+  <h2>
+    {hospitals.filter(
+      (hospital) => hospital.type === "International"
+    ).length}
+  </h2>
+</div>
+
 
               <div className="admin-stat-card">
                 <h3>Total Donors</h3>
@@ -231,6 +268,18 @@ function deleteUser(id) {
               <h3>System Summary</h3>
               <p>
   Active Hospitals: {hospitals.filter((hospital) => hospital.status === "Active").length}
+</p>
+
+<p>
+  National Hospitals: {hospitals.filter(
+    (hospital) => hospital.type === "National"
+  ).length}
+</p>
+
+<p>
+  International Hospitals: {hospitals.filter(
+    (hospital) => hospital.type === "International"
+  ).length}
 </p>
               <p>
   Pending Hospital Requests: {hospitals.filter((hospital) => hospital.status === "Pending").length}
@@ -262,17 +311,19 @@ function deleteUser(id) {
       onSubmit={(e) => {
         e.preventDefault();
 
-        setHospitals((previous) => [
-          ...previous,
-          {
-            id: `HOS-${String(previous.length + 1).padStart(3, "0")}`,
-            name: newHospital.name,
-            location: newHospital.location,
-            status: "Pending",
-          },
-        ]);
 
-        setNewHospital({ name: "", location: "" });
+        setHospitals((previous) => [
+  ...previous,
+  {
+    id: `HOS-${String(previous.length + 1).padStart(3, "0")}`,
+    name: newHospital.name,
+    location: newHospital.location,
+    type: newHospital.type,
+    status: "Pending",
+  },
+]);
+
+       setNewHospital({ name: "", location: "", type: "National" });
         setShowHospitalForm(false);
 
         alert("Hospital added successfully!");
@@ -293,6 +344,23 @@ function deleteUser(id) {
           required
         />
       </div>
+
+      <div className="form-group">
+  <label>Hospital Type</label>
+
+  <select
+    value={newHospital.type}
+    onChange={(e) =>
+      setNewHospital({
+        ...newHospital,
+        type: e.target.value,
+      })
+    }
+  >
+    <option value="National">National</option>
+    <option value="International">International</option>
+  </select>
+</div>
 
       <div className="form-group">
         <label>Hospital Location</label>
@@ -332,7 +400,8 @@ function deleteUser(id) {
                     <h3>{hospital.name}</h3>
                     <p>{hospital.id}</p>
                     <p>{hospital.location}</p>
-                    <p>Status: {hospital.status}</p>
+                    <p>Type: {hospital.type}</p>
+<p>Status: {hospital.status}</p>
                   </div>
 
                   <button
@@ -386,6 +455,18 @@ function deleteUser(id) {
       }
       placeholder="Hospital Location"
     />
+    <select
+  value={editHospitalData.type}
+  onChange={(e) =>
+    setEditHospitalData({
+      ...editHospitalData,
+      type: e.target.value,
+    })
+  }
+>
+  <option value="National">National</option>
+  <option value="International">International</option>
+</select>
 
     <button
       onClick={() => {
@@ -396,6 +477,7 @@ function deleteUser(id) {
                   ...item,
                   name: editHospitalData.name,
                   location: editHospitalData.location,
+                  type: editHospitalData.type,
                 }
               : item
           )
@@ -417,9 +499,10 @@ function deleteUser(id) {
   onClick={() => {
     setEditingHospitalId(hospital.id);
     setEditHospitalData({
-      name: hospital.name,
-      location: hospital.location,
-    });
+    name: hospital.name,
+    location: hospital.location,
+    type: hospital.type,
+});
   }}
 >
   Edit
