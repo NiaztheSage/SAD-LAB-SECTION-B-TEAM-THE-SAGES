@@ -9,6 +9,8 @@ function RecipientDashboard({ onLogout }) {
     phone: "01712345678",
     location: "Dhaka, Bangladesh",
   });
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [editedRecipient, setEditedRecipient] = useState(recipient);
 
   const [notifications, setNotifications] = useState([
     {
@@ -157,9 +159,87 @@ function RecipientDashboard({ onLogout }) {
               <p>Email: {recipient.email}</p>
               <p>Phone: {recipient.phone}</p>
               <p>Location: {recipient.location}</p>
+              <button
+  className="recipient-edit-btn"
+  onClick={() => {
+    setEditedRecipient(recipient);
+    setIsEditingProfile(true);
+  }}
+>
+  Edit Profile
+</button>
             </div>
           </div>
         </section>
+        {isEditingProfile && (
+  <div className="recipient-card">
+    <h3>Edit Recipient Profile</h3>
+
+    <label>Full Name</label>
+    <input
+      type="text"
+      value={editedRecipient.fullName}
+      onChange={(e) =>
+        setEditedRecipient({
+          ...editedRecipient,
+          fullName: e.target.value,
+        })
+      }
+    />
+
+    <label>Email</label>
+    <input
+      type="email"
+      value={editedRecipient.email}
+      onChange={(e) =>
+        setEditedRecipient({
+          ...editedRecipient,
+          email: e.target.value,
+        })
+      }
+    />
+
+    <label>Phone</label>
+    <input
+      type="text"
+      value={editedRecipient.phone}
+      onChange={(e) =>
+        setEditedRecipient({
+          ...editedRecipient,
+          phone: e.target.value,
+        })
+      }
+    />
+
+    <label>Location</label>
+    <input
+      type="text"
+      value={editedRecipient.location}
+      onChange={(e) =>
+        setEditedRecipient({
+          ...editedRecipient,
+          location: e.target.value,
+        })
+      }
+    />
+
+    <button
+      onClick={() => {
+        setRecipient(editedRecipient);
+        setIsEditingProfile(false);
+        alert("Profile updated successfully!");
+      }}
+    >
+      Save Changes
+    </button>
+
+    <button
+      onClick={() => setIsEditingProfile(false)}
+    >
+      Cancel
+    </button>
+  </div>
+)}
 
         {/* Registration */}
         <section className="recipient-section" id="registration">
