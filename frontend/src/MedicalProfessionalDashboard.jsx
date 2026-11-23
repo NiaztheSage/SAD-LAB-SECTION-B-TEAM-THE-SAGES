@@ -98,6 +98,43 @@ function MedicalProfessionalDashboard({ onLogout }) {
   },
 ]);
 
+const [pkePairs, setPkePairs] = useState([
+  {
+    id: "PKE-001",
+    donor: "Demo Donor A",
+    recipient: "Demo Recipient A",
+    bloodGroup: "O+",
+    status: "Under Review",
+    compatibility: "Pending Specialist Review",
+  },
+  {
+    id: "PKE-002",
+    donor: "Demo Donor B",
+    recipient: "Demo Recipient B",
+    bloodGroup: "A+",
+    status: "Under Review",
+    compatibility: "Pending Specialist Review",
+  },
+  {
+    id: "PKE-003",
+    donor: "Demo Donor C",
+    recipient: "Demo Recipient C",
+    bloodGroup: "B+",
+    status: "Registered",
+    compatibility: "Not Evaluated",
+  },
+]);
+
+function updatePKEStatus(id, field, value) {
+  setPkePairs((previous) =>
+    previous.map((pair) =>
+      pair.id === id
+        ? { ...pair, [field]: value }
+        : pair
+    )
+  );
+}
+
   function updateCaseStatus(id, status) {
     setCases(
       cases.map((item) =>
@@ -270,28 +307,91 @@ function MedicalProfessionalDashboard({ onLogout }) {
         );
 
       case "PKE":
-        return (
-          <>
-            <h2>Paired Kidney Exchange (PKE)</h2>
-            <div className="medical-pro-card">
-              <p>
-                The PKE module supports the coordination of incompatible
-                living kidney donor-recipient pairs.
-              </p>
-              <div className="medical-pro-info">
-                <h3>Demo PKE Cycle</h3>
-                <p>Pair A: Donor A → Recipient B</p>
-                <p>Pair B: Donor B → Recipient A</p>
-                <p>Status: Awaiting Specialist Review</p>
-              </div>
-              <p className="medical-pro-warning">
-                This is a fictional example. No actual matching or allocation
-                decision is made by this prototype.
-              </p>
-            </div>
-          </>
-        );
+  return (
+    <>
+      <h2>Paired Kidney Exchange (PKE)</h2>
+      <p>
+        Manage registered donor-recipient pairs and track
+        exchange cycle review progress.
+      </p>
 
+      <div className="medical-pro-stats">
+        <div className="medical-pro-stat">
+          <h3>{pkePairs.length}</h3>
+          <p>Registered Pairs</p>
+        </div>
+
+        <div className="medical-pro-stat">
+          <h3>
+            {
+              pkePairs.filter(
+                (pair) => pair.status === "Under Review"
+              ).length
+            }
+          </h3>
+          <p>Under Review</p>
+        </div>
+
+        <div className="medical-pro-stat">
+          <h3>
+            {
+              pkePairs.filter(
+                (pair) => pair.compatibility === "Pending Specialist Review"
+              ).length
+            }
+          </h3>
+          <p>Pending Review</p>
+        </div>
+      </div>
+
+      {pkePairs.map((pair) => (
+        <div className="medical-pro-card" key={pair.id}>
+          <h3>{pair.id}</h3>
+
+          <p><strong>Donor:</strong> {pair.donor}</p>
+          <p><strong>Recipient:</strong> {pair.recipient}</p>
+          <p><strong>Donor Blood Group:</strong> {pair.bloodGroup}</p>
+
+          <label>Pair Registration Status</label>
+          <select
+            value={pair.status}
+            onChange={(e) =>
+              updatePKEStatus(pair.id, "status", e.target.value)
+            }
+          >
+            <option>Registered</option>
+            <option>Under Review</option>
+            <option>Approved for Further Assessment</option>
+            <option>On Hold</option>
+          </select>
+
+          <label>Specialist Review Status</label>
+          <select
+            value={pair.compatibility}
+            onChange={(e) =>
+              updatePKEStatus(
+                pair.id,
+                "compatibility",
+                e.target.value
+              )
+            }
+          >
+            <option>Not Evaluated</option>
+            <option>Pending Specialist Review</option>
+            <option>Further Testing Required</option>
+            <option>Review Completed</option>
+          </select>
+        </div>
+      ))}
+
+      <p className="medical-pro-warning">
+        PKE exchange requires detailed clinical evaluation,
+        immunological testing and authorized specialist approval.
+        This demo does not calculate compatibility or approve
+        actual organ exchanges.
+      </p>
+    </>
+  );
       case "Transplant Records":
         case "Deceased Donor Coordination":
   return (
