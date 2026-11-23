@@ -1,0 +1,247 @@
+
+.hospital-admin-dashboard {
+  display: flex;
+  min-height: 100vh;
+  background: #f1f5f9;
+  font-family: Arial, sans-serif;
+}
+
+.hospital-admin-sidebar {
+  width: 250px;
+  background: #123b5d;
+  color: white;
+  padding: 25px 18px;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.hospital-admin-sidebar h2 {
+  font-size: 23px;
+  margin-bottom: 5px;
+}
+
+.hospital-admin-sidebar > p {
+  color: #cbd5e1;
+  margin-bottom: 30px;
+}
+
+.hospital-admin-sidebar nav {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.hospital-admin-sidebar nav button {
+  background: transparent;
+  color: #e2e8f0;
+  border: none;
+  padding: 13px 15px;
+  text-align: left;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.hospital-admin-sidebar nav button:hover,
+.hospital-admin-sidebar nav button.active {
+  background: #2563eb;
+  color: white;
+}
+
+.hospital-admin-logout {
+  margin-top: auto;
+  background: #dc2626;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.hospital-admin-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.hospital-admin-topbar {
+  background: white;
+  padding: 20px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.hospital-admin-topbar h2 {
+  margin: 0 0 5px;
+  color: #123b5d;
+}
+
+.hospital-admin-topbar p {
+  margin: 0;
+  color: #64748b;
+}
+
+.hospital-admin-topbar span {
+  background: #dbeafe;
+  color: #1d4ed8;
+  padding: 9px 15px;
+  border-radius: 20px;
+  font-weight: 600;
+}
+
+.hospital-admin-content {
+  padding: 30px;
+}
+
+.hospital-admin-content h2 {
+  color: #123b5d;
+  margin-bottom: 20px;
+}
+
+.hospital-admin-card {
+  background: white;
+  padding: 22px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
+  margin-bottom: 20px;
+}
+
+.hospital-admin-card h3 {
+  color: #123b5d;
+  margin-top: 0;
+}
+
+.hospital-admin-card label {
+  display: block;
+  margin: 12px 0 6px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.hospital-admin-card input,
+.hospital-admin-card select {
+  width: 100%;
+  padding: 11px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  box-sizing: border-box;
+  background: white;
+}
+
+.hospital-admin-card input:focus,
+.hospital-admin-card select:focus {
+  outline: none;
+  border-color: #2563eb;
+}
+
+.hospital-admin-card button {
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 11px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.hospital-admin-card button:hover {
+  background: #1d4ed8;
+}
+
+.hospital-admin-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+  margin: 25px 0;
+}
+
+.hospital-admin-stat {
+  background: white;
+  padding: 22px;
+  border-radius: 12px;
+  border-left: 4px solid #2563eb;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
+}
+
+.hospital-admin-stat h3 {
+  font-size: 28px;
+  color: #2563eb;
+  margin: 0 0 8px;
+}
+
+.hospital-admin-stat p {
+  color: #64748b;
+  margin: 0;
+}
+
+.hospital-admin-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.hospital-admin-card table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 550px;
+}
+
+.hospital-admin-card th,
+.hospital-admin-card td {
+  padding: 13px;
+  text-align: left;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.hospital-admin-card th {
+  background: #eff6ff;
+  color: #123b5d;
+}
+
+.hospital-admin-note {
+  color: #b45309;
+  background: #fffbeb;
+  padding: 12px;
+  border-radius: 8px;
+  margin-top: 18px;
+}
+
+@media (max-width: 900px) {
+  .hospital-admin-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 650px) {
+  .hospital-admin-dashboard {
+    flex-direction: column;
+  }
+
+  .hospital-admin-sidebar {
+    width: auto;
+  }
+
+  .hospital-admin-sidebar nav {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .hospital-admin-logout {
+    margin-top: 20px;
+  }
+
+  .hospital-admin-content {
+    padding: 18px;
+  }
+
+  .hospital-admin-topbar {
+    padding: 18px;
+  }
+
+  .hospital-admin-stats {
+    grid-template-columns: 1fr;
+  }
+}

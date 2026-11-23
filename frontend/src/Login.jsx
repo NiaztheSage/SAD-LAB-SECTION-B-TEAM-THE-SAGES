@@ -40,12 +40,15 @@ function handleSubmit(e) {
           <div className="form-group">
   <label>Login As</label>
   <select
-    value={accountType}
-    onChange={(e) => onAccountTypeChange(e.target.value)}
-  >
-    <option value="Donor">Donor</option>
-    <option value="Recipient">Recipient</option>
-  </select>
+  value={accountType}
+  onChange={(e) => onAccountTypeChange(e.target.value)}
+>
+  <option value="Donor">Donor</option>
+  <option value="Recipient">Recipient</option>
+  <option value="Hospital Admin">Hospital Admin</option>
+  <option value="Medical Professional">Medical Professional</option>
+  <option value="Super Admin">Super Admin</option>
+</select>
 </div>
           <p className="login-subtitle">
             Sign in to continue to your account.

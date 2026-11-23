@@ -1,0 +1,255 @@
+
+.medical-pro-dashboard {
+  display: flex;
+  min-height: 100vh;
+  background: #f1f5f9;
+  font-family: Arial, sans-serif;
+}
+
+.medical-pro-sidebar {
+  width: 255px;
+  background: #123b5d;
+  color: white;
+  padding: 25px 18px;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.medical-pro-sidebar h2 {
+  font-size: 23px;
+  margin-bottom: 5px;
+}
+
+.medical-pro-sidebar > p {
+  color: #cbd5e1;
+  margin-bottom: 25px;
+}
+
+.medical-pro-sidebar nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.medical-pro-sidebar nav button {
+  background: transparent;
+  color: #e2e8f0;
+  border: none;
+  padding: 12px 14px;
+  text-align: left;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.medical-pro-sidebar nav button:hover,
+.medical-pro-sidebar nav button.active {
+  background: #2563eb;
+  color: white;
+}
+
+.medical-pro-logout {
+  margin-top: auto;
+  background: #dc2626;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.medical-pro-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.medical-pro-topbar {
+  background: white;
+  padding: 20px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.medical-pro-topbar h2 {
+  margin: 0 0 5px;
+  color: #123b5d;
+}
+
+.medical-pro-topbar p {
+  margin: 0;
+  color: #64748b;
+}
+
+.medical-pro-topbar span {
+  background: #dbeafe;
+  color: #1d4ed8;
+  padding: 9px 14px;
+  border-radius: 20px;
+  font-weight: 600;
+}
+
+.medical-pro-content {
+  padding: 30px;
+}
+
+.medical-pro-content h2 {
+  color: #123b5d;
+  margin-bottom: 20px;
+}
+
+.medical-pro-card {
+  background: white;
+  padding: 22px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
+  margin-bottom: 20px;
+}
+
+.medical-pro-card h3 {
+  color: #123b5d;
+  margin-top: 0;
+}
+
+.medical-pro-card label {
+  display: block;
+  margin: 13px 0 6px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.medical-pro-card input,
+.medical-pro-card select {
+  width: 100%;
+  padding: 11px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  box-sizing: border-box;
+  background: white;
+}
+
+.medical-pro-card input:focus,
+.medical-pro-card select:focus {
+  outline: none;
+  border-color: #2563eb;
+}
+
+.medical-pro-card button {
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 11px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.medical-pro-card button:hover {
+  background: #1d4ed8;
+}
+
+.medical-pro-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+  margin: 25px 0;
+}
+
+.medical-pro-stat {
+  background: white;
+  padding: 22px;
+  border-radius: 12px;
+  border-left: 4px solid #2563eb;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
+}
+
+.medical-pro-stat h3 {
+  font-size: 28px;
+  color: #2563eb;
+  margin: 0 0 8px;
+}
+
+.medical-pro-stat p {
+  color: #64748b;
+  margin: 0;
+}
+
+.medical-pro-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.medical-pro-card table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 550px;
+}
+
+.medical-pro-card th,
+.medical-pro-card td {
+  padding: 13px;
+  text-align: left;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.medical-pro-card th {
+  background: #eff6ff;
+  color: #123b5d;
+}
+
+.medical-pro-info {
+  background: #eff6ff;
+  padding: 18px;
+  border-radius: 8px;
+  margin: 18px 0;
+}
+
+.medical-pro-warning {
+  color: #92400e;
+  background: #fffbeb;
+  padding: 14px;
+  border-radius: 8px;
+  line-height: 1.6;
+  margin-top: 18px;
+}
+
+@media (max-width: 900px) {
+  .medical-pro-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 650px) {
+  .medical-pro-dashboard {
+    flex-direction: column;
+  }
+
+  .medical-pro-sidebar {
+    width: auto;
+  }
+
+  .medical-pro-sidebar nav {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .medical-pro-logout {
+    margin-top: 20px;
+  }
+
+  .medical-pro-content {
+    padding: 18px;
+  }
+
+  .medical-pro-topbar {
+    padding: 18px;
+  }
+
+  .medical-pro-stats {
+    grid-template-columns: 1fr;
+  }
+}

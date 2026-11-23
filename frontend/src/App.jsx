@@ -7,6 +7,9 @@ import ForgotPassword from './ForgotPassword'
 import DonorDashboard from './DonorDashboard'
 import RecipientDashboard from './RecipientDashboard'
 import SuperAdminDashboard from './SuperAdminDashboard'
+import HospitalAdminDashboard from './HospitalAdminDashboard'
+import MedicalProfessionalDashboard from './MedicalProfessionalDashboard'
+
 
 function App() {
   const [showLogin, setShowLogin] = useState(false)
@@ -16,11 +19,27 @@ function App() {
   const [showDonorDashboard, setShowDonorDashboard] = useState(false)
   const [showRecipientDashboard, setShowRecipientDashboard] = useState(false)
   const [showSuperAdminDashboard, setShowSuperAdminDashboard] = useState(false)
+  const [showHospitalAdminDashboard, setShowHospitalAdminDashboard] = useState(false)
+  const [showMedicalProfessionalDashboard, setShowMedicalProfessionalDashboard] = useState(false)
 
 if (showSuperAdminDashboard) {
   return (
     <SuperAdminDashboard
       onLogout={() => setShowSuperAdminDashboard(false)}
+    />
+  )
+}
+if (showHospitalAdminDashboard) {
+  return (
+    <HospitalAdminDashboard
+      onLogout={() => setShowHospitalAdminDashboard(false)}
+    />
+  )
+}
+if (showMedicalProfessionalDashboard) {
+  return (
+    <MedicalProfessionalDashboard
+      onLogout={() => setShowMedicalProfessionalDashboard(false)}
     />
   )
 }
@@ -58,28 +77,39 @@ if (showForgotPassword) {
       onBack={() => setShowLogin(false)}
       onRegister={() => {
         setShowLogin(false)
-        setAccountType("Donor")
         setShowRegister(true)
       }}
+
 onLogin={(email, password) => {
-  if (
-    email === "admin@niodtcn.com" &&
-    password === "Admin@12345"
-  ) {
+  if (accountType === "Super Admin") {
+    if (
+      email === "admin@niodtcn.com" &&
+      password === "Admin@12345"
+    ) {
+      setShowLogin(false)
+      setShowSuperAdminDashboard(true)
+    } else {
+      alert("Invalid Super Admin email or password!")
+    }
+
+  } else if (accountType === "Hospital Admin") {
     setShowLogin(false)
-    setShowSuperAdminDashboard(true)
-  } else if (email === "admin@niodtcn.com") {
-    alert("Invalid Super Admin email or password!")
+    setShowHospitalAdminDashboard(true)
+
+  } else if (accountType === "Medical Professional") {
+    setShowLogin(false)
+    setShowMedicalProfessionalDashboard(true)
+
+  } else if (accountType === "Recipient") {
+    setShowLogin(false)
+    setShowRecipientDashboard(true)
+
   } else {
     setShowLogin(false)
-
-    if (accountType === "Recipient") {
-      setShowRecipientDashboard(true)
-    } else {
-      setShowDonorDashboard(true)
-    }
+    setShowDonorDashboard(true)
   }
 }}
+
       onForgotPassword={() => {
   setShowLogin(false)
   setShowForgotPassword(true)
