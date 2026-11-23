@@ -4,6 +4,32 @@ import "./SuperAdminDashboard.css";
 
 function SuperAdminDashboard({ onLogout }) {
   const [activeSection, setActiveSection] = useState("Overview");
+  const [auditLogs, setAuditLogs] = useState([
+  {
+    id: "LOG-001",
+    action: "Hospital Approved",
+    details: "Dhaka Central Hospital approved",
+    performedBy: "Super Admin",
+    date: "2026-11-20",
+    status: "Success",
+  },
+  {
+    id: "LOG-002",
+    action: "Donor Status Updated",
+    details: "Ayesha Rahman status changed to Approved",
+    performedBy: "Super Admin",
+    date: "2026-11-21",
+    status: "Success",
+  },
+  {
+    id: "LOG-003",
+    action: "User Registered",
+    details: "New recipient account registered",
+    performedBy: "System",
+    date: "2026-11-22",
+    status: "Success",
+  },
+]);
   const [showHospitalForm, setShowHospitalForm] = useState(false);
   const [editingHospitalId, setEditingHospitalId] = useState(null);
   const [editHospitalData, setEditHospitalData] = useState({
@@ -18,15 +44,17 @@ function SuperAdminDashboard({ onLogout }) {
     location: "",
   });
 
-  const menuItems = [
-    "Overview",
-    "Hospital Management",
-    "User Management",
-    "Donor Management",
-    "Recipient Management",
-    "System Statistics",
-    "Notifications",
-  ];
+ const menuItems = [
+  "Overview",
+  "Hospital Management",
+  "User Management",
+  "Donor Management",
+  "Recipient Management",
+  "System Statistics",
+  "Analytics Dashboard",
+  "Audit Logs",
+  "Notifications",
+];
 
 
 const [hospitals, setHospitals] = useState([
@@ -856,6 +884,17 @@ case "System Statistics":
         <h3>Platform Statistics</h3>
 
         <p>Active Hospitals: {hospitals.filter((hospital) => hospital.status === "Active").length}</p>
+        <p>
+  National Hospitals: {hospitals.filter(
+    (hospital) => hospital.type === "National"
+  ).length}
+</p>
+
+<p>
+  International Hospitals: {hospitals.filter(
+    (hospital) => hospital.type === "International"
+  ).length}
+</p>
 
         <p>Pending Hospitals: {hospitals.filter((hospital) => hospital.status === "Pending").length}</p>
 
@@ -870,6 +909,171 @@ case "System Statistics":
         <p>Demo Transplant Records: 12</p>
 
         <p>All statistics are fictional demo data.</p>
+      </div>
+    </>
+  );
+
+
+case "Analytics Dashboard":
+  return (
+    <>
+      <h2>Analytics Dashboard</h2>
+      <p>Monitor hospital, donor and recipient statistics.</p>
+
+      <div className="admin-stats">
+        <div className="admin-stat-card">
+          <h3>Total Hospitals</h3>
+          <h2>{hospitals.length}</h2>
+        </div>
+
+        <div className="admin-stat-card">
+          <h3>Total Donors</h3>
+          <h2>{donors.length}</h2>
+        </div>
+
+        <div className="admin-stat-card">
+          <h3>Total Recipients</h3>
+          <h2>{recipients.length}</h2>
+        </div>
+
+        <div className="admin-stat-card">
+          <h3>Demo Transplant Records</h3>
+          <h2>12</h2>
+        </div>
+      </div>
+
+      <div className="admin-content-card">
+        <h3>Hospital Distribution</h3>
+
+        <p>National Hospitals: {
+          hospitals.filter(h => h.type === "National").length
+        }</p>
+
+        <div style={{
+          background: "#e5e7eb",
+          height: "12px",
+          borderRadius: "10px",
+          overflow: "hidden"
+        }}>
+          <div style={{
+            width: `${hospitals.length ? hospitals.filter(h => h.type === "National").length / hospitals.length * 100 : 0}%`,
+            background: "#2563eb",
+            height: "100%"
+          }} />
+        </div>
+
+        <p>International Hospitals: {
+          hospitals.filter(h => h.type === "International").length
+        }</p>
+
+        <div style={{
+          background: "#e5e7eb",
+          height: "12px",
+          borderRadius: "10px",
+          overflow: "hidden"
+        }}>
+          <div style={{
+            width: `${hospitals.length ? hospitals.filter(h => h.type === "International").length / hospitals.length * 100 : 0}%`,
+            background: "#16a34a",
+            height: "100%"
+          }} />
+        </div>
+      </div>
+
+      <div className="admin-content-card">
+        <h3>Donor Registration Analytics</h3>
+
+        <p>Approved Donors: {
+          donors.filter(d => d.status === "Approved").length
+        }</p>
+
+        <p>Pending Donors: {
+          donors.filter(d => d.status === "Pending").length
+        }</p>
+
+        <p>Under Review: {
+          donors.filter(d => d.status === "Under Review").length
+        }</p>
+
+        <p>Rejected Donors: {
+          donors.filter(d => d.status === "Rejected").length
+        }</p>
+      </div>
+
+      <div className="admin-content-card">
+        <h3>Recipient Registration Analytics</h3>
+
+        <p>Approved Recipients: {
+          recipients.filter(r => r.status === "Approved").length
+        }</p>
+
+        <p>Under Review: {
+          recipients.filter(r => r.status === "Under Review").length
+        }</p>
+
+        <p>Registration Submitted: {
+          recipients.filter(r => r.status === "Registration Submitted").length
+        }</p>
+
+        <p>Rejected Recipients: {
+          recipients.filter(r => r.status === "Rejected").length
+        }</p>
+      </div>
+
+      <div className="admin-content-card">
+        <h3>Analytics Information</h3> 
+                                                                                                                                                                                            
+        <p>Hospital data: Dynamic</p>
+        <p>Donor data: Dynamic</p>
+        <p>Recipient data: Dynamic</p>
+        <p>Transplant records: Fictional demo data</p>
+      </div>
+    </>
+  );
+
+
+case "Audit Logs":
+  return (
+    <>
+      <h2>Audit Logs & Security</h2>
+      <p>Monitor system activities and security events.</p>
+
+      <div className="admin-stats">
+        <div className="admin-stat-card">
+          <h3>Total Activities</h3>
+          <h2>{auditLogs.length}</h2>
+        </div>
+
+        <div className="admin-stat-card">
+          <h3>Successful Activities</h3>
+          <h2>
+            {auditLogs.filter(log => log.status === "Success").length}
+          </h2>
+        </div>
+      </div>
+
+      <div className="admin-content-card">
+        <h3>Activity History</h3>
+
+        {auditLogs.map((log) => (
+          <div className="admin-list-item" key={log.id}>
+            <div>
+              <h3>{log.action}</h3>
+              <p>Log ID: {log.id}</p>
+              <p>{log.details}</p>
+              <p>Performed By: {log.performedBy}</p>
+              <p>Date: {log.date}</p>
+              <p>Status: {log.status}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="admin-content-card">
+        <h3>Security Information</h3>
+        <p>Activity Monitoring: Demo</p>
+        <p>Audit History: Sample Data</p>
+        <p>Real-time Security Monitoring: Not Connected</p>
       </div>
     </>
   );
