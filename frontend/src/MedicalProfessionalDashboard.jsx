@@ -75,6 +75,29 @@ function MedicalProfessionalDashboard({ onLogout }) {
     },
   ]);
 
+  const [deceasedDonors, setDeceasedDonors] = useState([
+  {
+    id: "DD-001",
+    donorName: "Demo Donor A",
+    hospital: "Dhaka Central Hospital",
+    referralDate: "2026-11-20",
+    authorization: "Pending",
+    evaluation: "Not Started",
+    organAssessment: "Pending",
+    status: "New Referral",
+  },
+  {
+    id: "DD-002",
+    donorName: "Demo Donor B",
+    hospital: "National Medical Center",
+    referralDate: "2026-11-21",
+    authorization: "Reviewed",
+    evaluation: "In Progress",
+    organAssessment: "Pending",
+    status: "Under Review",
+  },
+]);
+
   function updateCaseStatus(id, status) {
     setCases(
       cases.map((item) =>
@@ -82,6 +105,16 @@ function MedicalProfessionalDashboard({ onLogout }) {
       )
     );
   }
+
+  function updateDeceasedDonor(id, field, value) {
+  setDeceasedDonors(
+    deceasedDonors.map((donor) =>
+      donor.id === id
+        ? { ...donor, [field]: value }
+        : donor
+    )
+  );
+}
 
   function checkCompatibility(e) {
     e.preventDefault();
@@ -260,6 +293,131 @@ function MedicalProfessionalDashboard({ onLogout }) {
         );
 
       case "Transplant Records":
+        case "Deceased Donor Coordination":
+  return (
+    <>
+      <h2>Deceased Donor Coordination Workflow</h2>
+      <p>
+        Manage deceased donor referrals, authorization and clinical
+        coordination records.
+      </p>
+
+      <div className="medical-pro-stats">
+        <div className="medical-pro-stat">
+          <h3>{deceasedDonors.length}</h3>
+          <p>Total Referrals</p>
+        </div>
+
+        <div className="medical-pro-stat">
+          <h3>
+            {
+              deceasedDonors.filter(
+                (donor) => donor.authorization === "Pending"
+              ).length
+            }
+          </h3>
+          <p>Pending Authorization</p>
+        </div>
+
+        <div className="medical-pro-stat">
+          <h3>
+            {
+              deceasedDonors.filter(
+                (donor) => donor.evaluation === "In Progress"
+              ).length
+            }
+          </h3>
+          <p>Evaluations in Progress</p>
+        </div>
+      </div>
+
+      {deceasedDonors.map((donor) => (
+        <div className="deceased-donor-card" key={donor.id}>
+          <h3>{donor.donorName}</h3>
+
+          <p>Donor ID: {donor.id}</p>
+          <p>Hospital: {donor.hospital}</p>
+          <p>Referral Date: {donor.referralDate}</p>
+
+          <label>Authorization Status</label>
+          <select
+            value={donor.authorization}
+            onChange={(e) =>
+              updateDeceasedDonor(
+                donor.id,
+                "authorization",
+                e.target.value
+              )
+            }
+          >
+            <option>Pending</option>
+            <option>Reviewed</option>
+            <option>Authorized</option>
+            <option>Not Authorized</option>
+          </select>
+
+          <label>Clinical Evaluation Status</label>
+          <select
+            value={donor.evaluation}
+            onChange={(e) =>
+              updateDeceasedDonor(
+                donor.id,
+                "evaluation",
+                e.target.value
+              )
+            }
+          >
+            <option>Not Started</option>
+            <option>In Progress</option>
+            <option>Completed</option>
+            <option>Requires Further Review</option>
+          </select>
+
+          <label>Organ Assessment Status</label>
+          <select
+            value={donor.organAssessment}
+            onChange={(e) =>
+              updateDeceasedDonor(
+                donor.id,
+                "organAssessment",
+                e.target.value
+              )
+            }
+          >
+            <option>Pending</option>
+            <option>In Progress</option>
+            <option>Completed</option>
+            <option>Not Suitable - Requires Specialist Review</option>
+          </select>
+
+          <label>Coordination Status</label>
+          <select
+            value={donor.status}
+            onChange={(e) =>
+              updateDeceasedDonor(
+                donor.id,
+                "status",
+                e.target.value
+              )
+            }
+          >
+            <option>New Referral</option>
+            <option>Under Review</option>
+            <option>Coordination in Progress</option>
+            <option>Completed</option>
+            <option>On Hold</option>
+          </select>
+        </div>
+      ))}
+
+      <p className="medical-pro-warning">
+        Demo workflow only. Authorization, death determination, clinical
+        evaluation, organ suitability and allocation require applicable
+        legal procedures and decisions by authorized professionals.
+        This system does not make medical decisions.
+      </p>
+    </>
+  );
         return (
           <>
             <h2>Transplant Records</h2>
@@ -438,6 +596,7 @@ function MedicalProfessionalDashboard({ onLogout }) {
     "Assigned Cases",
     "Matching Support",
     "PKE",
+    "Deceased Donor Coordination",
     "Transplant Records",
     "Organ Logistics",
     "Referrals",
