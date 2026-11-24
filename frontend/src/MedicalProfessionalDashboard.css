@@ -434,4 +434,32 @@
 .medical-pro-card select:focus {
   outline: none;
   border-color: #2563eb;
+
+}
+
+/* Transplant Records Management */
+
+.medical-pro-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.medical-pro-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+.medical-pro-card strong {
+  color: #123b5d;
+}
+
+.medical-pro-card select {
+  width: 100%;
+  cursor: pointer;
+  margin-top: 8px;
+  margin-bottom: 15px;
+}
+
+.medical-pro-card select:focus {
+  outline: none;
+  border-color: #2563eb;
 }

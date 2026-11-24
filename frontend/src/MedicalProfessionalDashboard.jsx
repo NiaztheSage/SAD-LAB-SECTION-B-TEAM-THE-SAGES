@@ -167,6 +167,43 @@ function updatePKEStatus(id, field, value) {
     )
   );
 }
+const [transplantRecords, setTransplantRecords] = useState([
+  {
+    id: "TR-001",
+    recipient: "Demo Recipient A",
+    organ: "Kidney",
+    hospital: "Dhaka Central Hospital",
+    transplantDate: "2026-10-15",
+    status: "Follow-up Required",
+  },
+  {
+    id: "TR-002",
+    recipient: "Demo Recipient B",
+    organ: "Liver",
+    hospital: "National Medical Center",
+    transplantDate: "2026-09-20",
+    status: "Completed",
+  },
+  {
+    id: "TR-003",
+    recipient: "Demo Recipient C",
+    organ: "Kidney",
+    hospital: "International Partner Hospital",
+    transplantDate: "2026-11-10",
+    status: "Under Review",
+  },
+]);
+
+function updateTransplantStatus(id, status) {
+  setTransplantRecords((previous) =>
+    previous.map((record) =>
+      record.id === id
+        ? { ...record, status }
+        : record
+    )
+  );
+}
+
 
   function updateCaseStatus(id, status) {
     setCases(
@@ -425,7 +462,7 @@ function updatePKEStatus(id, field, value) {
       </p>
     </>
   );
-      case "Transplant Records":
+      
         case "Deceased Donor Coordination":
   return (
     <>
@@ -551,40 +588,75 @@ function updatePKEStatus(id, field, value) {
       </p>
     </>
   );
-        return (
-          <>
-            <h2>Transplant Records</h2>
-            <div className="medical-pro-card">
-              <p>Demo transplant records</p>
-              <div className="medical-pro-table-wrap">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Record ID</th>
-                      <th>Organ</th>
-                      <th>Hospital</th>
-                      <th>Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>TR-001</td>
-                      <td>Kidney</td>
-                      <td>Dhaka Central Hospital</td>
-                      <td>Follow-up</td>
-                    </tr>
-                    <tr>
-                      <td>TR-002</td>
-                      <td>Liver</td>
-                      <td>National Medical Center</td>
-                      <td>Completed</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </>
-        );
+ 
+case "Transplant Records":
+  return (
+    <>
+      <h2>Transplant Records</h2>
+      <p>
+        View and manage demo transplant records and
+        post-transplant follow-up progress.
+      </p>
+
+      <div className="medical-pro-stats">
+        <div className="medical-pro-stat">
+          <h3>{transplantRecords.length}</h3>
+          <p>Total Records</p>
+        </div>
+
+        <div className="medical-pro-stat">
+          <h3>
+            {transplantRecords.filter(
+              (record) => record.status === "Completed"
+            ).length}
+          </h3>
+          <p>Completed</p>
+        </div>
+
+        <div className="medical-pro-stat">
+          <h3>
+            {transplantRecords.filter(
+              (record) => record.status !== "Completed"
+            ).length}
+          </h3>
+          <p>Pending Follow-up / Review</p>
+        </div>
+      </div>
+
+      {transplantRecords.map((record) => (
+        <div className="medical-pro-card" key={record.id}>
+          <h3>{record.id}</h3>
+
+          <p><strong>Recipient:</strong> {record.recipient}</p>
+          <p><strong>Organ:</strong> {record.organ}</p>
+          <p><strong>Hospital:</strong> {record.hospital}</p>
+          <p><strong>Transplant Date:</strong> {record.transplantDate}</p>
+
+          <label>Record Status</label>
+          <select
+            value={record.status}
+            onChange={(e) =>
+              updateTransplantStatus(record.id, e.target.value)
+            }
+          >
+            <option>Under Review</option>
+            <option>Follow-up Required</option>
+            <option>Follow-up in Progress</option>
+            <option>Completed</option>
+            <option>On Hold</option>
+          </select>
+        </div>
+      ))}
+
+      <p className="medical-pro-warning">
+        These are fictional demonstration records.
+        Actual transplant records and follow-up decisions
+        must be maintained and reviewed by authorized
+        healthcare professionals.
+      </p>
+    </>
+  );
+
 
       case "Organ Logistics":
         return (
