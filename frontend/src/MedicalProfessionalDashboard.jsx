@@ -37,19 +37,43 @@ function MedicalProfessionalDashboard({ onLogout }) {
   ]);
 
   const [notifications, setNotifications] = useState([
-    {
-      id: 1,
-      title: "New Medical Case Assigned",
-      message: "A new kidney case has been assigned for review.",
-      read: false,
-    },
-    {
-      id: 2,
-      title: "Referral Update",
-      message: "A hospital referral is waiting for review.",
-      read: false,
-    },
-  ]);
+  {
+    id: 1,
+    title: "New Medical Case Assigned",
+    message: "A new kidney case has been assigned for review.",
+    category: "Medical Case",
+    priority: "High",
+    date: "2026-11-24",
+    read: false,
+  },
+  {
+    id: 2,
+    title: "Referral Update",
+    message: "A hospital referral is waiting for review.",
+    category: "Referral",
+    priority: "Medium",
+    date: "2026-11-23",
+    read: false,
+  },
+  {
+    id: 3,
+    title: "PKE Review Reminder",
+    message: "A paired kidney exchange case requires specialist review.",
+    category: "PKE",
+    priority: "High",
+    date: "2026-11-22",
+    read: true,
+  },
+  {
+    id: 4,
+    title: "Organ Logistics Update",
+    message: "An organ transportation record has been updated.",
+    category: "Organ Logistics",
+    priority: "Low",
+    date: "2026-11-21",
+    read: false,
+  },
+]);
 
   const [matchingData, setMatchingData] = useState({
     donorBlood: "O+",
@@ -87,6 +111,43 @@ const [logistics, setLogistics] = useState([
     status: "Delivered",
   },
 ]);
+
+const [researchDatasets, setResearchDatasets] = useState([
+  {
+    id: "DS-001",
+    organ: "Kidney",
+    description: "Synthetic kidney transplant outcome dataset",
+    deIdentificationStatus: "De-identified",
+    approvalStatus: "Approved",
+    accessLevel: "Authorized Researchers",
+  },
+  {
+    id: "DS-002",
+    organ: "Liver",
+    description: "Synthetic liver transplant study dataset",
+    deIdentificationStatus: "Under Review",
+    approvalStatus: "Pending",
+    accessLevel: "Restricted",
+  },
+  {
+    id: "DS-003",
+    organ: "Kidney",
+    description: "Synthetic kidney compatibility research dataset",
+    deIdentificationStatus: "De-identified",
+    approvalStatus: "Pending",
+    accessLevel: "Research Team Only",
+  },
+]);
+
+function updateResearchDataset(id, field, value) {
+  setResearchDatasets((previous) =>
+    previous.map((dataset) =>
+      dataset.id === id
+        ? { ...dataset, [field]: value }
+        : dataset
+    )
+  );
+}
 
 
   const [deceasedDonors, setDeceasedDonors] = useState([
@@ -746,6 +807,107 @@ case "Organ Logistics":
     </>
   );
 
+  case "Research Repository":
+  return (
+    <>
+      <h2>De-identified Research Repository</h2>
+      <p>
+        Manage synthetic, de-identified research datasets
+        for authorized research purposes.
+      </p>
+
+      <div className="medical-pro-stats">
+        <div className="medical-pro-stat">
+          <h3>{researchDatasets.length}</h3>
+          <p>Total Datasets</p>
+        </div>
+
+        <div className="medical-pro-stat">
+          <h3>
+            {researchDatasets.filter(
+              (item) => item.deIdentificationStatus === "De-identified"
+            ).length}
+          </h3>
+          <p>De-identified</p>
+        </div>
+
+        <div className="medical-pro-stat">
+          <h3>
+            {researchDatasets.filter(
+              (item) => item.approvalStatus === "Approved"
+            ).length}
+          </h3>
+          <p>Approved Datasets</p>
+        </div>
+      </div>
+
+      {researchDatasets.map((dataset) => (
+        <div className="medical-pro-card" key={dataset.id}>
+          <h3>{dataset.id}</h3>
+
+          <p><strong>Organ:</strong> {dataset.organ}</p>
+          <p><strong>Description:</strong> {dataset.description}</p>
+
+          <label>De-identification Status</label>
+          <select
+            value={dataset.deIdentificationStatus}
+            onChange={(e) =>
+              updateResearchDataset(
+                dataset.id,
+                "deIdentificationStatus",
+                e.target.value
+              )
+            }
+          >
+            <option>Under Review</option>
+            <option>De-identified</option>
+            <option>Rejected</option>
+          </select>
+
+          <label>Research Approval Status</label>
+          <select
+            value={dataset.approvalStatus}
+            onChange={(e) =>
+              updateResearchDataset(
+                dataset.id,
+                "approvalStatus",
+                e.target.value
+              )
+            }
+          >
+            <option>Pending</option>
+            <option>Approved</option>
+            <option>Rejected</option>
+          </select>
+
+          <label>Dataset Access Level</label>
+          <select
+            value={dataset.accessLevel}
+            onChange={(e) =>
+              updateResearchDataset(
+                dataset.id,
+                "accessLevel",
+                e.target.value
+              )
+            }
+          >
+            <option>Restricted</option>
+            <option>Research Team Only</option>
+            <option>Authorized Researchers</option>
+          </select>
+        </div>
+      ))}
+
+      <p className="medical-pro-warning">
+        All records are fictional demonstration data.
+        Real research datasets require proper de-identification,
+        institutional approval, privacy safeguards and
+        authorized access. This prototype does not perform
+        actual anonymization or grant real access permissions.
+      </p>
+    </>
+  );
+
       
 case "Referrals":
   return (
@@ -822,33 +984,103 @@ case "Referrals":
 
 
       case "Notifications":
-        return (
-          <>
-            <h2>Notifications</h2>
-            {notifications.map((item) => (
-              <div className="medical-pro-card" key={item.id}>
-                <h3>{item.title}</h3>
-                <p>{item.message}</p>
-                <p>{item.read ? "Read" : "Unread"}</p>
-                {!item.read && (
-                  <button
-                    onClick={() =>
-                      setNotifications(
-                        notifications.map((notification) =>
-                          notification.id === item.id
-                            ? { ...notification, read: true }
-                            : notification
-                        )
-                      )
-                    }
-                  >
-                    Mark as Read
-                  </button>
-                )}
-              </div>
-            ))}
-          </>
-        );
+  return (
+    <>
+      <h2>Automated Notifications</h2>
+      <p>
+        Monitor and manage medical workflow notifications.
+      </p>
+
+      <div className="medical-pro-stats">
+        <div className="medical-pro-stat">
+          <h3>{notifications.length}</h3>
+          <p>Total Notifications</p>
+        </div>
+
+        <div className="medical-pro-stat">
+          <h3>
+            {notifications.filter((item) => !item.read).length}
+          </h3>
+          <p>Unread</p>
+        </div>
+
+        <div className="medical-pro-stat">
+          <h3>
+            {notifications.filter(
+              (item) => item.priority === "High"
+            ).length}
+          </h3>
+          <p>High Priority</p>
+        </div>
+
+        <div className="medical-pro-stat">
+          <h3>
+            {notifications.filter((item) => item.read).length}
+          </h3>
+          <p>Read</p>
+        </div>
+      </div>
+
+      <div className="medical-pro-card">
+        <h3>Filter Notifications</h3>
+
+        <select
+          value={notificationFilter}
+          onChange={(e) => setNotificationFilter(e.target.value)}
+        >
+          <option value="All">All Notifications</option>
+          <option value="Unread">Unread Only</option>
+          <option value="Read">Read Only</option>
+          <option value="High">High Priority</option>
+          <option value="Medium">Medium Priority</option>
+          <option value="Low">Low Priority</option>
+        </select>
+      </div>
+
+      {notifications
+        .filter((item) => {
+          if (notificationFilter === "Unread") return !item.read;
+          if (notificationFilter === "Read") return item.read;
+          if (["High", "Medium", "Low"].includes(notificationFilter)) {
+            return item.priority === notificationFilter;
+          }
+          return true;
+        })
+        .map((item) => (
+          <div className="medical-pro-card" key={item.id}>
+            <h3>{item.title}</h3>
+
+            <p>{item.message}</p>
+            <p><strong>Category:</strong> {item.category}</p>
+            <p><strong>Priority:</strong> {item.priority}</p>
+            <p><strong>Date:</strong> {item.date}</p>
+            <p><strong>Status:</strong> {item.read ? "Read" : "Unread"}</p>
+
+            {!item.read && (
+              <button
+                onClick={() =>
+                  setNotifications((previous) =>
+                    previous.map((notification) =>
+                      notification.id === item.id
+                        ? { ...notification, read: true }
+                        : notification
+                    )
+                  )
+                }
+              >
+                Mark as Read
+              </button>
+            )}
+          </div>
+        ))}
+
+      <p className="medical-pro-warning">
+        These are fictional demonstration notifications.
+        Real-time automated alerts require backend event
+        processing and notification services.
+      </p>
+    </>
+  );
 
       default:
         return (
@@ -902,6 +1134,7 @@ case "Referrals":
     "Deceased Donor Coordination",
     "Transplant Records",
     "Organ Logistics",
+    "Research Repository",
     "Referrals",
     "Notifications",
   ];

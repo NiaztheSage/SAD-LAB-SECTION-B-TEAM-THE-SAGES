@@ -927,107 +927,115 @@ case "Analytics Dashboard":
         </div>
 
         <div className="admin-stat-card">
-          <h3>Total Donors</h3>
-          <h2>{donors.length}</h2>
+          <h3>National Hospitals</h3>
+          <h2>
+            {hospitals.filter((h) => h.type === "National").length}
+          </h2>
         </div>
 
         <div className="admin-stat-card">
-          <h3>Total Recipients</h3>
-          <h2>{recipients.length}</h2>
+          <h3>International Hospitals</h3>
+          <h2>
+            {hospitals.filter((h) => h.type === "International").length}
+          </h2>
         </div>
 
         <div className="admin-stat-card">
-          <h3>Demo Transplant Records</h3>
-          <h2>12</h2>
+          <h3>Total Users</h3>
+          <h2>{donors.length + recipients.length}</h2>
         </div>
       </div>
 
       <div className="admin-content-card">
         <h3>Hospital Distribution</h3>
 
-        <p>National Hospitals: {
-          hospitals.filter(h => h.type === "National").length
-        }</p>
+        {["National", "International"].map((type) => {
+          const count = hospitals.filter(
+            (h) => h.type === type
+          ).length;
 
-        <div style={{
-          background: "#e5e7eb",
-          height: "12px",
-          borderRadius: "10px",
-          overflow: "hidden"
-        }}>
-          <div style={{
-            width: `${hospitals.length ? hospitals.filter(h => h.type === "National").length / hospitals.length * 100 : 0}%`,
-            background: "#2563eb",
-            height: "100%"
-          }} />
-        </div>
+          const percentage = hospitals.length
+            ? (count / hospitals.length) * 100
+            : 0;
 
-        <p>International Hospitals: {
-          hospitals.filter(h => h.type === "International").length
-        }</p>
+          return (
+            <div key={type} style={{ marginBottom: "20px" }}>
+              <p>
+                <strong>{type} Hospitals:</strong> {count} (
+                {percentage.toFixed(1)}%)
+              </p>
 
-        <div style={{
-          background: "#e5e7eb",
-          height: "12px",
-          borderRadius: "10px",
-          overflow: "hidden"
-        }}>
-          <div style={{
-            width: `${hospitals.length ? hospitals.filter(h => h.type === "International").length / hospitals.length * 100 : 0}%`,
-            background: "#16a34a",
-            height: "100%"
-          }} />
-        </div>
+              <div style={{
+                background: "#e5e7eb",
+                height: "12px",
+                borderRadius: "10px",
+                overflow: "hidden"
+              }}>
+                <div style={{
+                  width: `${percentage}%`,
+                  background: type === "National" ? "#2563eb" : "#16a34a",
+                  height: "100%"
+                }} />
+              </div>
+            </div>
+          );
+        })}
       </div>
 
       <div className="admin-content-card">
         <h3>Donor Registration Analytics</h3>
 
-        <p>Approved Donors: {
-          donors.filter(d => d.status === "Approved").length
-        }</p>
+        {["Approved", "Pending", "Under Review", "Rejected"].map((status) => {
+          const count = donors.filter(
+            (d) => d.status === status
+          ).length;
 
-        <p>Pending Donors: {
-          donors.filter(d => d.status === "Pending").length
-        }</p>
-
-        <p>Under Review: {
-          donors.filter(d => d.status === "Under Review").length
-        }</p>
-
-        <p>Rejected Donors: {
-          donors.filter(d => d.status === "Rejected").length
-        }</p>
+          return (
+            <p key={status}>
+              <strong>{status}:</strong> {count}
+            </p>
+          );
+        })}
       </div>
 
       <div className="admin-content-card">
         <h3>Recipient Registration Analytics</h3>
 
-        <p>Approved Recipients: {
-          recipients.filter(r => r.status === "Approved").length
-        }</p>
+        {["Approved", "Under Review", "Registration Submitted", "Rejected"].map((status) => {
+          const count = recipients.filter(
+            (r) => r.status === status
+          ).length;
 
-        <p>Under Review: {
-          recipients.filter(r => r.status === "Under Review").length
-        }</p>
-
-        <p>Registration Submitted: {
-          recipients.filter(r => r.status === "Registration Submitted").length
-        }</p>
-
-        <p>Rejected Recipients: {
-          recipients.filter(r => r.status === "Rejected").length
-        }</p>
+          return (
+            <p key={status}>
+              <strong>{status}:</strong> {count}
+            </p>
+          );
+        })}
       </div>
 
       <div className="admin-content-card">
-        <h3>Analytics Information</h3> 
-                                                                                                                                                                                            
-        <p>Hospital data: Dynamic</p>
-        <p>Donor data: Dynamic</p>
-        <p>Recipient data: Dynamic</p>
-        <p>Transplant records: Fictional demo data</p>
+        <h3>Analytics Summary</h3>
+        <p>Total Hospitals: {hospitals.length}</p>
+        <p>Total Donors: {donors.length}</p>
+        <p>Total Recipients: {recipients.length}</p>
+        <p>
+          Approved Donors: {
+            donors.filter((d) => d.status === "Approved").length
+          }
+        </p>
+        <p>
+          Approved Recipients: {
+            recipients.filter((r) => r.status === "Approved").length
+          }
+        </p>
+        <p>Transplant Records: 12 (Fictional Demo Data)</p>
       </div>
+
+      <p className="admin-warning">
+        Analytics are based on fictional demonstration data.
+        Real-time reporting requires backend integration.
+      </p>
     </>
   );
 
