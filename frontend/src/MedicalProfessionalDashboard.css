@@ -463,3 +463,123 @@
   outline: none;
   border-color: #2563eb;
 }
+
+/* ==================================
+   Medical Professional Responsive UI
+================================== */
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .medical-pro-sidebar {
+    width: 220px;
+    padding: 20px 14px;
+  }
+
+  .medical-pro-content {
+    padding: 22px;
+  }
+
+  .medical-pro-topbar {
+    padding: 18px 22px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .medical-pro-dashboard {
+    flex-direction: column;
+  }
+
+  .medical-pro-sidebar {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 18px;
+  }
+
+  .medical-pro-sidebar h2 {
+    font-size: 20px;
+  }
+
+  .medical-pro-sidebar > p {
+    margin-bottom: 15px;
+  }
+
+  .medical-pro-sidebar nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .medical-pro-sidebar nav button {
+    flex: 1 1 auto;
+    text-align: center;
+    padding: 10px;
+    font-size: 13px;
+  }
+
+  .medical-pro-logout {
+    margin-top: 15px;
+  }
+
+  .medical-pro-main {
+    width: 100%;
+  }
+
+  .medical-pro-topbar {
+    padding: 16px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .medical-pro-content {
+    padding: 16px;
+  }
+
+  .medical-pro-card {
+    padding: 17px;
+  }
+
+  .medical-pro-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+  .medical-pro-sidebar {
+    padding: 14px;
+  }
+
+  .medical-pro-sidebar nav button {
+    flex: 1 1 100%;
+  }
+
+  .medical-pro-topbar h2 {
+    font-size: 19px;
+  }
+
+  .medical-pro-content {
+    padding: 12px;
+  }
+
+  .medical-pro-content h2 {
+    font-size: 20px;
+  }
+
+  .medical-pro-card {
+    padding: 14px;
+    overflow-wrap: anywhere;
+  }
+
+  .medical-pro-card button,
+  .medical-pro-card select {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .medical-pro-stats {
+    grid-template-columns: 1fr;
+  }
+}

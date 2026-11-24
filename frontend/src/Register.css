@@ -199,3 +199,62 @@
   margin-top: -10px;
   margin-bottom: 15px;
 }
+
+
+/* ==================================
+   Register Page Responsive Design
+================================== */
+
+@media (max-width: 600px) {
+  .register-page {
+    padding: 22px 12px;
+    align-items: flex-start;
+  }
+
+  .register-container {
+    padding: 25px 18px;
+    border-radius: 12px;
+  }
+
+  .register-back {
+    margin-bottom: 18px;
+  }
+
+  .register-header {
+    margin-bottom: 22px;
+  }
+
+  .register-header h1 {
+    font-size: 25px;
+  }
+
+  .register-heading h2 {
+    font-size: 22px;
+  }
+
+  .register-container input,
+  .register-container select,
+  .register-container textarea {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .register-container button {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 360px) {
+  .register-container {
+    padding: 20px 14px;
+  }
+
+  .register-header h1 {
+    font-size: 22px;
+  }
+
+  .register-heading h2 {
+    font-size: 20px;
+  }
+}

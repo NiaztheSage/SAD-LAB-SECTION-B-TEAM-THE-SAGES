@@ -329,3 +329,80 @@ footer {
   }
 }
 
+
+/* ==================================
+   Landing Page Responsive Improvements
+================================== */
+
+@media (max-width: 480px) {
+  .navbar {
+    padding: 16px 5%;
+    gap: 14px;
+  }
+
+  .logo {
+    font-size: 18px;
+  }
+
+  .nav-links {
+    gap: 12px;
+  }
+
+  .nav-links a {
+    font-size: 13px;
+  }
+
+  .login-btn {
+    padding: 8px 14px;
+    font-size: 13px;
+  }
+
+  .hero {
+    min-height: auto;
+    padding: 55px 6%;
+  }
+
+  .hero h1 {
+    font-size: 32px;
+  }
+
+  .hero-description {
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  .hero-buttons {
+    flex-direction: column;
+  }
+
+  .primary-btn,
+  .secondary-btn {
+    width: 100%;
+  }
+
+  .about {
+    padding: 55px 6%;
+  }
+
+  .about h2 {
+    font-size: 23px;
+  }
+
+  .about p:last-child {
+    font-size: 14px;
+  }
+
+  .services {
+    padding: 45px 6%;
+  }
+
+  .services-heading h2 {
+    font-size: 24px;
+  }
+
+  .service-card {
+    padding: 22px;
+  }
+}
+
+

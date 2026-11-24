@@ -614,3 +614,82 @@ html {
     width: 100%;
   }
 }
+
+
+/* ==================================
+   Donor Dashboard Responsive Improvements
+================================== */
+
+/* Tablet */
+@media (max-width: 900px) {
+  .donor-welcome {
+    padding: 25px;
+  }
+
+  .donor-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+  .donor-sidebar {
+    padding: 18px 14px;
+  }
+
+  .donor-logo {
+    margin-bottom: 20px;
+  }
+
+  .donor-nav {
+    grid-template-columns: 1fr;
+  }
+
+  .donor-main {
+    padding: 12px;
+  }
+
+  .donor-topbar h2 {
+    font-size: 20px;
+  }
+
+  .donor-welcome {
+    padding: 18px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .donor-welcome h1 {
+    font-size: 19px;
+  }
+
+  .welcome-icon {
+    font-size: 38px;
+  }
+
+  .donor-stats {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .donor-stat-card {
+    padding: 17px;
+  }
+
+  .donor-profile-card,
+  .donor-info-card,
+  .donor-empty-card,
+  .donor-notification {
+    padding: 16px;
+  }
+
+  .edit-profile-btn,
+  .donor-logout-btn {
+    max-width: 100%;
+  }
+
+  .donation-history-list {
+    grid-template-columns: 1fr;
+  }
+}
+

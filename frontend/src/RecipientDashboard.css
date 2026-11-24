@@ -427,3 +427,74 @@ html {
     width: 100%;
   }
 }
+
+
+/* ==================================
+   Recipient Dashboard Responsive Improvements
+================================== */
+
+/* Tablet */
+@media (max-width: 900px) {
+  .recipient-sidebar {
+    width: 210px;
+  }
+
+  .recipient-main {
+    margin-left: 210px;
+    width: calc(100% - 210px);
+    padding: 20px;
+  }
+
+  .recipient-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+  .recipient-sidebar {
+    padding: 18px 14px;
+  }
+
+  .recipient-sidebar h2 {
+    font-size: 21px;
+  }
+
+  .recipient-sidebar nav {
+    grid-template-columns: 1fr;
+  }
+
+  .recipient-main {
+    margin-left: 0;
+    width: 100%;
+    padding: 12px;
+  }
+
+  .recipient-topbar {
+    padding: 15px;
+  }
+
+  .recipient-topbar h2 {
+    font-size: 20px;
+  }
+
+  .recipient-section > h2 {
+    font-size: 19px;
+  }
+
+  .recipient-stats {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .recipient-stat-card,
+  .recipient-card {
+    padding: 16px;
+    overflow-wrap: anywhere;
+  }
+
+  .recipient-read-btn {
+    width: 100%;
+  }
+}
+

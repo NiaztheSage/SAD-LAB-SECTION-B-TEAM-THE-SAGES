@@ -245,3 +245,131 @@
     grid-template-columns: 1fr;
   }
 }
+
+
+/* ==================================
+   Hospital Admin Responsive Improvements
+================================== */
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .hospital-admin-sidebar {
+    width: 220px;
+    box-sizing: border-box;
+  }
+
+  .hospital-admin-content {
+    padding: 22px;
+  }
+
+  .hospital-admin-topbar {
+    padding: 18px 22px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+  .hospital-admin-sidebar {
+    width: 100%;
+    padding: 16px;
+    box-sizing: border-box;
+  }
+
+  .hospital-admin-sidebar nav {
+    grid-template-columns: 1fr;
+  }
+
+  .hospital-admin-main {
+    width: 100%;
+  }
+
+  .hospital-admin-topbar {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 15px;
+  }
+
+  .hospital-admin-content {
+    padding: 12px;
+  }
+
+  .hospital-admin-content h2 {
+    font-size: 20px;
+  }
+
+  .hospital-admin-card {
+    padding: 15px;
+    overflow-wrap: anywhere;
+  }
+
+  .hospital-admin-card button {
+    max-width: 100%;
+  }
+
+  .hospital-admin-stat {
+    padding: 16px;
+  }
+}
+/* Hospital Admin Responsive Improvements */
+
+@media (max-width: 1024px) {
+  .hospital-admin-sidebar {
+    width: 220px;
+    box-sizing: border-box;
+  }
+
+  .hospital-admin-content {
+    padding: 22px;
+  }
+
+  .hospital-admin-topbar {
+    padding: 18px 22px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hospital-admin-sidebar {
+    width: 100%;
+    padding: 16px;
+    box-sizing: border-box;
+  }
+
+  .hospital-admin-sidebar nav {
+    grid-template-columns: 1fr;
+  }
+
+  .hospital-admin-main {
+    width: 100%;
+  }
+
+  .hospital-admin-topbar {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 15px;
+  }
+
+  .hospital-admin-content {
+    padding: 12px;
+  }
+
+  .hospital-admin-content h2 {
+    font-size: 20px;
+  }
+
+  .hospital-admin-card {
+    padding: 15px;
+    overflow-wrap: anywhere;
+  }
+
+  .hospital-admin-card button {
+    max-width: 100%;
+  }
+
+  .hospital-admin-stat {
+    padding: 16px;
+  }
+}
