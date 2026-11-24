@@ -60,20 +60,34 @@ function MedicalProfessionalDashboard({ onLogout }) {
 
   const [matchResult, setMatchResult] = useState("");
 
-  const [logistics, setLogistics] = useState([
-    {
-      id: "ORG-001",
-      organ: "Kidney",
-      destination: "Dhaka Central Hospital",
-      status: "Preparation",
-    },
-    {
-      id: "ORG-002",
-      organ: "Liver",
-      destination: "National Medical Center",
-      status: "In Transit",
-    },
-  ]);
+  
+const [logistics, setLogistics] = useState([
+  {
+    id: "ORG-001",
+    organ: "Kidney",
+    source: "Dhaka Central Hospital",
+    destination: "National Medical Center",
+    transportMethod: "Medical Ambulance",
+    status: "Preparation",
+  },
+  {
+    id: "ORG-002",
+    organ: "Liver",
+    source: "National Medical Center",
+    destination: "International Partner Hospital",
+    transportMethod: "Air Transport",
+    status: "In Transit",
+  },
+  {
+    id: "ORG-003",
+    organ: "Kidney",
+    source: "International Partner Hospital",
+    destination: "Dhaka Central Hospital",
+    transportMethod: "Medical Ambulance",
+    status: "Delivered",
+  },
+]);
+
 
   const [deceasedDonors, setDeceasedDonors] = useState([
   {
@@ -658,54 +672,79 @@ case "Transplant Records":
   );
 
 
-      case "Organ Logistics":
-        return (
-          <>
-            <h2>Organ Logistics Tracking</h2>
-            <div className="medical-pro-card">
-              <div className="medical-pro-table-wrap">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Organ ID</th>
-                      <th>Organ</th>
-                      <th>Destination</th>
-                      <th>Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {logistics.map((item) => (
-                      <tr key={item.id}>
-                        <td>{item.id}</td>
-                        <td>{item.organ}</td>
-                        <td>{item.destination}</td>
-                        <td>
-                          <select
-                            value={item.status}
-                            onChange={(e) =>
-                              setLogistics(
-                                logistics.map((organ) =>
-                                  organ.id === item.id
-                                    ? { ...organ, status: e.target.value }
-                                    : organ
-                                )
-                              )
-                            }
-                          >
-                            <option>Preparation</option>
-                            <option>In Transit</option>
-                            <option>Delivered</option>
-                            <option>On Hold</option>
-                          </select>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </>
-        );
+      
+case "Organ Logistics":
+  return (
+    <>
+      <h2>Organ Logistics Tracking</h2>
+      <p>
+        Track organ transportation from source hospitals
+        to destination hospitals.
+      </p>
+
+      <div className="medical-pro-stats">
+        <div className="medical-pro-stat">
+          <h3>{logistics.length}</h3>
+          <p>Total Organs</p>
+        </div>
+
+        <div className="medical-pro-stat">
+          <h3>
+            {logistics.filter(
+              (item) => item.status === "In Transit"
+            ).length}
+          </h3>
+          <p>In Transit</p>
+        </div>
+
+        <div className="medical-pro-stat">
+          <h3>
+            {logistics.filter(
+              (item) => item.status === "Delivered"
+            ).length}
+          </h3>
+          <p>Delivered</p>
+        </div>
+      </div>
+
+      {logistics.map((item) => (
+        <div className="medical-pro-card" key={item.id}>
+          <h3>{item.id}</h3>
+
+          <p><strong>Organ:</strong> {item.organ}</p>
+          <p><strong>Source Hospital:</strong> {item.source}</p>
+          <p><strong>Destination Hospital:</strong> {item.destination}</p>
+          <p><strong>Transport Method:</strong> {item.transportMethod}</p>
+
+          <label>Transportation Status</label>
+          <select
+            value={item.status}
+            onChange={(e) =>
+              setLogistics((previous) =>
+                previous.map((organ) =>
+                  organ.id === item.id
+                    ? { ...organ, status: e.target.value }
+                    : organ
+                )
+              )
+            }
+          >
+            <option>Preparation</option>
+            <option>In Transit</option>
+            <option>Delivered</option>
+            <option>On Hold</option>
+          </select>
+        </div>
+      ))}
+
+      <p className="medical-pro-warning">
+        This is a fictional logistics demonstration.
+        Actual organ transportation requires authorized
+        coordination, medical preservation protocols and
+        appropriate transport arrangements.
+      </p>
+    </>
+  );
 
       
 case "Referrals":
