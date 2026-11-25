@@ -250,3 +250,131 @@ The core functional modules of NI-ODTCN are grouped into Major Prototype (P3–P
 
 - D3 — PDF generation library (e.g., ReportLab / WeasyPrint) must be available for exporting referral dossiers and transplant records.
 
+# 3 External Interface Requirements
+
+## 3.1 User Interfaces
+
+| **Screen**                       | **User(s)**                            | **Key design requirements**                                                                                                  |
+|----------------------------------|----------------------------------------|------------------------------------------------------------------------------------------------------------------------------|
+| Landing & Role Portal            | All Users                              | Platform overview, donor pledge CTA, partner hospital directory, and unified Login / Registration entry.                     |
+| Donor & Recipient Registration   | Donor, Recipient                       | Multi-step form capturing demographics, blood group, organ pledge/requirement, consent checkboxes, and medical summary.      |
+| Super Admin Dashboard            | Super Admin                            | Global statistics, pending hospital verification queue, user/role management table, system status, and audit log viewer.     |
+| Hospital Admin Dashboard         | Hospital Admin                         | Hospital profile editor, organ capability matrix, medical staff roster, incoming/outgoing referral queue, and local metrics. |
+| Clinical Assessment Workspace    | Medical Professional                   | Clinical view displaying donor/recipient lab reports, ABO/HLA compatibility indicators, and eligibility sign-off forms.      |
+| Matching & PKE Visualizer        | Medical Professional                   | Ranked compatible candidate list with match scores and cycle graph for Paired Kidney Exchange (2-way/3-way cycles).          |
+| Deceased Donor & Logistics Board | Medical Professional                   | Time-critical workflow tracker for deceased donors, retrieval checklist, preservation method, and Cold Ischemia Time timer.  |
+| Cross-Border Referral Portal     | Hospital Admin, Medical Pro, Recipient | Structured referral request form, attached clinical dossier viewer, inter-hospital messaging, and status tracker.            |
+| Transplant & Follow-Up Log       | Medical Professional, Recipient        | Surgical procedure record form and longitudinal post-transplant follow-up timeline.                                          |
+| Analytics & Research Repository  | Super Admin, Medical Pro               | Filterable national vs. international transplant statistics and de-identified dataset query/download interface.              |
+
+**UI standards applying to all screens:**
+
+- All interactive elements shall meet WCAG 2.1 Level AA colour contrast (≥ 4.5:1 for body text).
+
+- Error messages shall appear inline next to the invalid form field.
+
+- Clinically sensitive actions (rejecting a referral, revoking consent, suspending an account) shall require a confirmation modal with a mandatory reason.
+
+## 3.2 Hardware Interfaces
+
+NI-ODTCN is a web-based software platform requiring no specialized medical peripherals or hardware interfaces in Prototype v1. Standard desktop, laptop, tablet, or smartphone hardware with standard input devices and network connectivity is sufficient.
+
+## 3.3 Software Interfaces
+
+| **External service**      | **Version / Protocol** | **Purpose**                               | **Data exchanged**                                                                 |
+|---------------------------|------------------------|-------------------------------------------|------------------------------------------------------------------------------------|
+| MySQL 8.0 / PostgreSQL 15 | TCP/IP (3306 / 5432)   | Primary relational data store.            | Users, hospitals, donors, recipients, matches, referrals, transplants, audit logs. |
+| Redis                     | v7 · TCP/IP (6379)     | Session token blocklist and alert timers. | Revoked JWT IDs, rate-limit counters, CIT alert states.                            |
+| Object Storage (S3)       | HTTPS / REST           | Encrypted clinical document storage.      | PDF/JPEG lab reports, imaging summaries, consent forms.                            |
+| SMTP / SMS Gateway        | TLS / HTTPS REST       | Email and SMS alert delivery.             | Verification links/OTPs, referral alerts, deceased-donor notifications.            |
+| PDF & Charting SDKs       | Internal libraries     | Document export and data visualization.   | Referral summary PDFs, transplant records, analytics charts.                       |
+
+## 3.4 Communication Interfaces
+
+- HTTPS (TLS 1.2 minimum): All client–server communication uses HTTPS; HTTP requests redirect automatically to HTTPS.
+
+- REST / JSON: Back-end APIs exchange UTF-8 encoded JSON payloads using standard HTTP status codes.
+
+- JWT Bearer Authentication: Protected API requests authenticate via signed JWT tokens in the Authorization header.
+
+- Multipart File Upload: Clinical documents transfer over HTTPS multipart/form-data with MIME-type and 10 MB size validation.
+
+# 4 Functional Requirements
+
+## 4.1 Authentication & Role-Based Access Control (FR-AUTH) — Must
+
+| **ID**         | **Requirement**                                                                                                                                                                            | **Priority** | **Source**                    |
+|----------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------|-------------------------------|
+| **FR-AUTH-01** | The system shall allow prospective Donors and Recipients to register an account by providing a valid email address, mobile number, full name, and password (minimum 8 characters).         | Must         | Ref \[1\] Sec 3.01, 4         |
+| **FR-AUTH-02** | The system shall verify newly registered user email addresses via a verification token or 6-digit OTP expiring within 15 minutes before activating login access.                           | Must         | Ref \[1\] Sec 3.01            |
+| **FR-AUTH-03** | The system shall authenticate registered users via email and password and issue a signed JWT access token (valid for 12 hours) encoding user ID and core role.                             | Must         | Ref \[1\] Sec 4               |
+| **FR-AUTH-04** | The system shall enforce Role-Based Access Control (RBAC) on all API routes, restricting access strictly to Super Admin, Hospital Admin, Medical Professional, Donor, and Recipient roles. | Must         | Ref \[1\] Sec 4               |
+| **FR-AUTH-05** | The system shall lock a user account for 30 minutes after 5 consecutive failed login attempts within a 15-minute window and log the event.                                                 | Must         | OWASP A07, Ref \[1\] Sec 3.16 |
+| **FR-AUTH-06** | The system shall invalidate the active session token immediately when a user logs out.                                                                                                     | Must         | Ref \[1\] Sec 3.16            |
+
+## 4.2 Hospital Network & Administration (FR-HOSP) — Must
+
+| **ID**         | **Requirement**                                                                                                                                                                                                                    | **Priority** | **Source**              |
+|----------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------|-------------------------|
+| **FR-HOSP-01** | The system shall allow a Super Admin to register a National or International Hospital by recording hospital name, country, city, accreditation ID, contact details, and designated Hospital Admin.                                 | Must         | Ref \[1\] Sec 3.02, 5.1 |
+| **FR-HOSP-02** | The system shall maintain a hospital verification status ('Pending Verification', 'Verified', 'Suspended') and prevent unverified hospitals from participating in matching or referrals.                                           | Must         | Ref \[1\] Sec 5.1       |
+| **FR-HOSP-03** | The system shall allow a verified Hospital Admin to configure their hospital's organ-specific transplant capabilities (Kidney, Liver) and surgical readiness status.                                                               | Must         | Ref \[1\] Sec 5.2       |
+| **FR-HOSP-04** | The system shall allow a Hospital Admin to create, verify, and deactivate Medical Professional accounts under their institution with assigned specialty (Doctor, Surgeon, ICU Specialist, Lab Specialist, Transplant Coordinator). | Must         | Ref \[1\] Sec 5.2, 5.3  |
+| **FR-HOSP-05** | The system shall allow a Super Admin to activate, suspend, or modify permissions of any user account on the platform.                                                                                                              | Must         | Ref \[1\] Sec 5.1       |
+
+## 4.3 Donor & Recipient Registry Management (FR-REG) — Must
+
+| **ID**        | **Requirement**                                                                                                                                                                                                        | **Priority** | **Source**              |
+|---------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------|-------------------------|
+| **FR-REG-01** | The system shall allow an authenticated Donor to create and update a donor profile specifying donation type ('Living Donor' or 'Deceased Donor Intention'), blood group (ABO/Rh), age, location, and pledged organ(s). | Must         | Ref \[1\] Sec 3.03, 5.4 |
+| **FR-REG-02** | The system shall require a Donor to record informed consent status and designate an authorized next-of-kin representative for deceased donation intention pledges.                                                     | Must         | Ref \[1\] Sec 5.4       |
+| **FR-REG-03** | The system shall display a mandatory disclaimer stating that donor registration does not automatically certify medical eligibility or replace statutory legal consent.                                                 | Must         | Ref \[1\] Sec 5.4       |
+| **FR-REG-04** | The system shall allow an authenticated Recipient to register a transplant profile specifying required organ (Kidney or Liver in Prototype v1), blood group, urgency level, medical history, and preferred hospital.   | Must         | Ref \[1\] Sec 3.04, 5.5 |
+| **FR-REG-05** | The system shall allow Donors and Recipients to upload supporting medical reports (PDF, JPEG, PNG up to 10 MB) and view their verification and evaluation status.                                                      | Must         | Ref \[1\] Sec 5.4, 5.5  |
+| **FR-REG-06** | The system shall allow a Hospital Admin or assigned Medical Professional to verify donor/recipient records and update evaluation status ('Submitted', 'Under Review', 'Clinically Cleared', 'Ineligible').             | Must         | Ref \[1\] Sec 5.2, 5.3  |
+
+## 4.4 Clinical Compatibility Matching & Paired Kidney Exchange (FR-MATCH) — Must
+
+| **ID**          | **Requirement**                                                                                                                                                                                                 | **Priority** | **Source**              |
+|-----------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------|-------------------------|
+| **FR-MATCH-01** | The system shall allow an authorized Medical Professional to record clinical assessment parameters for donors and recipients, including ABO blood group, HLA antigens, crossmatch result, and organ biomarkers. | Must         | Ref \[1\] Sec 3.09, 5.3 |
+| **FR-MATCH-02** | The system shall generate ranked donor-recipient compatibility suggestions for Kidney and Liver cases based on ABO compatibility, HLA match score, crossmatch status, and clinical urgency.                     | Must         | Ref \[1\] Sec 3.05, 5.3 |
+| **FR-MATCH-03** | The system shall label all generated matches as 'Decision-Support Suggestions' and require explicit sign-off by an authorized Medical Professional before transplant coordination.                              | Must         | Ref \[1\] Sec 2, 5.3    |
+| **FR-MATCH-04** | The system shall identify incompatible living kidney donor-recipient pairs and detect valid 2-way or 3-way Paired Kidney Exchange (PKE) cycles.                                                                 | Must         | Ref \[1\] Sec 3.07, 5.3 |
+| **FR-MATCH-05** | The system shall display detected PKE exchange cycles visually to authorized Transplant Coordinators and allow them to propose or reject a cycle for clinical review.                                           | Should       | Ref \[1\] Sec 5.3, 8    |
+
+## 4.5 Deceased Donor Coordination & Organ Logistics (FR-DECEASED) — Must
+
+| **ID**        | **Requirement**                                                                                                                                                                                             | **Priority** | **Source**               |
+|---------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------|--------------------------|
+| **FR-DEC-01** | The system shall allow an ICU Specialist or Transplant Coordinator to initiate a Potential Deceased Donor case, recording external brain-death certification reference ID, ICU hospital, and viable organs. | Must         | Ref \[1\] Sec 3.06, 5.3  |
+| **FR-DEC-02** | The system shall record family/next-of-kin authorization confirmation before enabling organ matching suggestions for a deceased donor case.                                                                 | Must         | Ref \[1\] Sec 3.06, 5.4  |
+| **FR-DEC-03** | The system shall track authorized organ retrieval and transportation milestones, including retrieval timestamp, preservation method, destination hospital, and elapsed Cold Ischemia Time (CIT).            | Should       | Ref \[1\] Sec 3.10       |
+| **FR-DEC-04** | The system shall trigger a high-priority warning alert when elapsed Cold Ischemia Time reaches 75% of the organ's safe preservation limit.                                                                  | Should       | Ref \[1\] Sec 3.10, 3.13 |
+
+## 4.6 National & International Patient Referral (FR-REF) — Must
+
+| **ID**        | **Requirement**                                                                                                                                                                                                       | **Priority** | **Source**                 |
+|---------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------|----------------------------|
+| **FR-REF-01** | The system shall allow a Recipient or treating Medical Professional to submit a referral request from a source hospital to a target National or International partner hospital with clinical justification.           | Must         | Ref \[1\] Sec 3.08, 5.5, 6 |
+| **FR-REF-02** | The system shall package the patient's authorized medical history and diagnostic reports into a structured referral dossier accessible to the receiving Hospital Admin and Medical Professionals.                     | Must         | Ref \[1\] Sec 6            |
+| **FR-REF-03** | The system shall allow the receiving Hospital Admin or Medical Professional to update referral status ('Submitted', 'Under Clinical Review', 'Accepted', 'Additional Info Required', 'Declined') with clinical notes. | Must         | Ref \[1\] Sec 5.2, 5.3     |
+| **FR-REF-04** | The system shall allow both the referring hospital and the Recipient to track real-time referral progress and exchange structured clinical clarification messages.                                                    | Must         | Ref \[1\] Sec 5.5, 6       |
+
+## 4.7 Transplant Procedure & Post-Transplant Follow-Up (FR-TRANS) — Must
+
+| **ID**          | **Requirement**                                                                                                                                                                                                        | **Priority** | **Source**              |
+|-----------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------|-------------------------|
+| **FR-TRANS-01** | The system shall allow an authorized Surgeon or Transplant Coordinator to record a completed transplant procedure, capturing donor ID, recipient ID, organ type, hospital, surgical team, procedure date, and outcome. | Must         | Ref \[1\] Sec 3.11, 5.3 |
+| **FR-TRANS-02** | The system shall automatically update matched Donor and Recipient case statuses to 'Transplanted' upon finalization of the transplant record.                                                                          | Must         | Ref \[1\] Sec 3.11      |
+| **FR-TRANS-03** | The system shall allow Medical Professionals to schedule and log post-transplant follow-up visits for living donors and recipients, recording clinical vitals, graft function markers, and medication notes.           | Must         | Ref \[1\] Sec 3.12, 5.3 |
+| **FR-TRANS-04** | The system shall allow Donors and Recipients to view their post-transplant follow-up history and upcoming appointment reminders.                                                                                       | Should       | Ref \[1\] Sec 5.4, 5.5  |
+
+## 4.8 Analytics, Research Repository & Audit Logs (FR-ADMIN) — Must
+
+| **ID**          | **Requirement**                                                                                                                                                                             | **Priority** | **Source**              |
+|-----------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------|-------------------------|
+| **FR-ADMIN-01** | The system shall provide role-scoped analytical dashboards displaying donor registrations, active recipients by organ, matching rates, cross-border referrals, and transplant outcomes.     | Must         | Ref \[1\] Sec 3.14, 5.1 |
+| **FR-ADMIN-02** | The system shall allow a Super Admin to generate and publish de-identified clinical datasets (stripped of all PII) to the Research Repository for authorized clinical users.                | Should       | Ref \[1\] Sec 3.15, 5.1 |
+| **FR-ADMIN-03** | The system shall maintain an immutable audit log recording timestamp (UTC), actor user ID, role, action performed, target entity ID, and IP address for all record views and modifications. | Must         | Ref \[1\] Sec 3.16, 5.1 |
+| **FR-ADMIN-04** | The system shall prohibit any user role, including Super Admin, from editing or deleting entries in the audit log table.                                                                    | Must         | Ref \[1\] Sec 3.16      |
