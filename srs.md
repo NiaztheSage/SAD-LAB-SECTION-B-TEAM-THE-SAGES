@@ -493,3 +493,71 @@ Not applicable to v0.1 / v1.0. This is a new platform with no predecessor system
 | Medical Professional | Guided in-app tooltips for compatibility evaluation, PKE cycle graph, and deceased donor workflow.     | At first clinical login     |
 | Donor & Recipient    | 3-step in-app onboarding guide explaining consent disclaimers, report uploads, and referral tracking.  | At initial registration     |
 | Must         | Ref \[1\] Sec 3.16      |
+# Appendix A — Analysis and Design Models
+
+The following analysis and design models will be drawn in Figma and embedded in subsequent SRS revisions (v0.2–v1.0) for the P3 submission:
+
+## A.1 Context Diagram and Level-1 DFD
+
+- Context Diagram (Level-0): Shows NI-ODTCN as a single process interacting with Super Admin, Hospital Admin, Medical Professional, Donor, Recipient, Email/SMS Gateway, and External Regulatory Authority.
+
+- Level-1 DFD — 6 major processes: (1.0) Manage Authentication & RBAC, (2.0) Manage Hospitals & Staff, (3.0) Manage Donor & Recipient Registries, (4.0) Execute Organ Matching & PKE, (5.0) Coordinate Deceased Donors & Referrals, and (6.0) Record Transplants, Follow-Ups & Audits. Data stores: DS1 Users, DS2 Hospitals, DS3 Donors_Recipients, DS4 Matches_PKE, DS5 Referrals_Logistics, DS6 Transplants_AuditLogs.
+
+## A.2 Use Case Diagram and Descriptions
+
+| **ID**    | **Use Case**                | **Primary actor**                      | **Pre-condition**                           | **Main success scenario**                                                                               | **Post-condition**                      |
+|-----------|-----------------------------|----------------------------------------|---------------------------------------------|---------------------------------------------------------------------------------------------------------|-----------------------------------------|
+| **UC-01** | Register & Verify Hospital  | Super Admin                            | Super Admin logged in.                      | Super Admin enters hospital details, assigns Hospital Admin, verifies credentials, activates hospital.  | Hospital status: Verified.              |
+| **UC-02** | Register Donation Intention | Donor                                  | Valid email/phone; accepts disclaimer.      | Donor completes profile, selects Living/Deceased intention, signs consent, uploads medical reports.     | Donor profile created (Pending Review). |
+| **UC-03** | Register Transplant Need    | Recipient                              | Valid email/phone.                          | Recipient enters clinical history, required organ (Kidney/Liver), uploads labs, selects hospital.       | Recipient added to waitlist.            |
+| **UC-04** | Evaluate Match & PKE        | Medical Professional                   | Cleared donor & recipient records exist.    | Clinician enters ABO/HLA/crossmatch data, reviews match suggestions or PKE cycles, signs off.           | Match proposal recorded with sign-off.  |
+| **UC-05** | Coordinate Deceased Donor   | Medical Professional                   | External brain-death cert & family consent. | ICU/Coordinator logs deceased donor, verifies consent, reviews matches, tracks retrieval/CIT.           | Organs allocated & logistics tracked.   |
+| **UC-06** | Submit & Review Referral    | Recipient / Hospital Admin / Clinician | Source & target hospitals verified.         | Referral dossier submitted to National/International hospital; receiving team reviews & updates status. | Referral Accepted/Declined with notes.  |
+| **UC-07** | Log Transplant & Follow-Up  | Medical Professional                   | Approved match & completed surgery.         | Surgeon logs transplant outcome; post-transplant follow-up visits and graft metrics recorded.           | Case status: Transplanted.              |
+
+## A.3 Activity, Class, Sequence, State Machine & ERD Models (P3 Roadmap)
+
+- A.3 Activity Diagrams: Swimlane workflows for Donor/Recipient Registration, Compatibility & PKE Review, Deceased Donor Coordination, and Cross-Border Referral Approval.
+
+- A.4 Class Diagram: Domain entities including User, Hospital, MedicalProfessional, DonorProfile, RecipientProfile, ClinicalAssessment, MatchSuggestion, PKECycle, DeceasedDonorCase, OrganLogistics, ReferralRequest, TransplantRecord, FollowUpRecord, and AuditLog.
+
+- A.5 Sequence Diagrams: SD-01 Cross-Border Patient Referral, SD-02 Paired Kidney Exchange Discovery, and SD-03 Deceased Donor Coordination & CIT Alert.
+
+- A.6 State Machine Diagrams: Lifecycle transitions for Hospital Status, Donor/Recipient Case Status, Referral Status, and Organ Logistics Status.
+
+- A.7 Database Schema (ERD): Normalized 3NF relational schema with crow's-foot cardinality notation supporting 3 national and 2 international prototype hospitals.
+
+# Appendix B — Requirements Traceability Matrix (RTM)
+
+| **Req ID**          | **Use case**        | **Target screen**                    | **Design element**                           | **Status**      |
+|---------------------|---------------------|--------------------------------------|----------------------------------------------|-----------------|
+| **FR-AUTH-01..06**  | UC-01, UC-02, UC-03 | Landing & Login Portal               | users, roles tables; RBAC middleware         | Planned (P3–P4) |
+| **FR-HOSP-01..05**  | UC-01               | Super Admin & Hospital Dashboards    | hospitals, hospital_staff tables             | Planned (P3–P4) |
+| **FR-REG-01..06**   | UC-02, UC-03        | Donor & Recipient Registration       | donors, recipients, medical_documents tables | Planned (P3–P4) |
+| **FR-MATCH-01..05** | UC-04               | Clinical Assessment & PKE Visualizer | clinical_assessments, matches, pke_cycles    | Planned (P3–P4) |
+| **FR-DEC-01..04**   | UC-05               | Deceased Donor & Logistics Board     | deceased_cases, organ_logistics tables       | Planned (P4–P5) |
+| **FR-REF-01..04**   | UC-06               | Cross-Border Referral Portal         | referral_requests, referral_messages tables  | Planned (P3–P4) |
+| **FR-TRANS-01..04** | UC-07               | Transplant & Follow-Up Log           | transplant_records, followup_records tables  | Planned (P4–P5) |
+| **FR-ADMIN-01..04** | All UCs             | Analytics & Audit Log Viewer         | audit_logs (immutable), research_exports     | Planned (P4–P6) |
+
+# Appendix C — Supplementary Glossary · AI-Use Disclosure
+
+## Supplementary Glossary
+
+| **Term**                     | **Meaning**                                                                                                                                             |
+|------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Living Donor                 | A healthy living individual who voluntarily consents to donate a kidney or partial liver lobe to a compatible recipient.                                |
+| Deceased Donor Intention     | An advance pledge recorded by an individual expressing willingness to donate organs after certified brain death, subject to family/legal authorization. |
+| Crossmatch Test              | A pre-transplant laboratory test mixing donor and recipient blood samples to detect preformed antibodies.                                               |
+| Paired Kidney Exchange Cycle | A closed loop of 2 or more incompatible donor-recipient pairs where each donor gives a kidney to another pair's compatible recipient.                   |
+| Decision-Support Boundary    | Architectural rule ensuring software outputs serve strictly as advisory recommendations requiring licensed physician sign-off.                          |
+
+## AI-Use Disclosure
+
+| **Tool**      | **Used for**                                                                                                                                                                                                                                                                          | **Reviewed by**                                                   |
+|---------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------|
+| Google Gemini | Assisting with structural drafting of the SRS v0.1 document and formatting requirement tables based on Team: The Sages' project blueprint. All requirements, feasibility assessments, sustainability model, and scope boundaries were reviewed and verified by all four team members. | Niaz Morshed, Sultanul Arefin, Rukshana Akter Rumi, Samia Hossain |
+
+**Team declaration:** Team: The Sages takes full responsibility for all requirements, design decisions, architecture choices, and scope definitions in this project. No AI tool replaced team thinking on feasibility, domain analysis, or system architecture.
+
+*NI-ODTCN SRS v0.1 · UIU CSE 3412 SAD Lab · Course Teacher: Rejwan Ahmed, CSE Department, UIU · Fall 2026*
