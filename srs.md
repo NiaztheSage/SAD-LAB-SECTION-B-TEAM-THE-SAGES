@@ -377,4 +377,119 @@ NI-ODTCN is a web-based software platform requiring no specialized medical perip
 | **FR-ADMIN-01** | The system shall provide role-scoped analytical dashboards displaying donor registrations, active recipients by organ, matching rates, cross-border referrals, and transplant outcomes.     | Must         | Ref \[1\] Sec 3.14, 5.1 |
 | **FR-ADMIN-02** | The system shall allow a Super Admin to generate and publish de-identified clinical datasets (stripped of all PII) to the Research Repository for authorized clinical users.                | Should       | Ref \[1\] Sec 3.15, 5.1 |
 | **FR-ADMIN-03** | The system shall maintain an immutable audit log recording timestamp (UTC), actor user ID, role, action performed, target entity ID, and IP address for all record views and modifications. | Must         | Ref \[1\] Sec 3.16, 5.1 |
-| **FR-ADMIN-04** | The system shall prohibit any user role, including Super Admin, from editing or deleting entries in the audit log table.                                                                    | Must         | Ref \[1\] Sec 3.16      |
+| **FR-ADMIN-04** | The system shall prohibit any user role, including Super Admin, from editing or deleting entries in the audit log table. 
+
+# 5 Non-Functional Requirements
+
+| **ID**          | **Category**    | **Requirement**                                                                                                                                                                        |
+|-----------------|-----------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **NFR-PERF-01** | Performance     | Dashboard, registry search, and referral pages shall load within 2.0 seconds for 95% of requests under a simulated load of 150 concurrent users.                                       |
+| **NFR-PERF-02** | Performance     | Organ compatibility matching and Paired Kidney Exchange cycle queries shall complete within 3.0 seconds for a prototype dataset of up to 1,000 records.                                |
+| **NFR-SEC-01**  | Security        | All passwords shall be hashed using bcrypt or Argon2id (minimum work factor 12); plaintext passwords shall never be stored or logged.                                                  |
+| **NFR-SEC-02**  | Security        | All medical files and PII/PHI stored in databases and object storage shall be encrypted at rest using AES-256 and transmitted over TLS 1.2+.                                           |
+| **NFR-SEC-03**  | Security        | Every API endpoint accessing donor, recipient, or referral clinical records shall enforce server-side RBAC and hospital-scope verification, returning HTTP 403 on unauthorized access. |
+| **NFR-SEC-04**  | Security        | De-identified research exports (FR-ADMIN-02) shall strip 100% of direct identifiers (name, NID/passport, phone, email, address) prior to export.                                       |
+| **NFR-USE-01**  | Usability       | A first-time Donor or Recipient shall be able to complete registration and submit an initial pledge or organ request within 5 minutes without assistance.                              |
+| **NFR-USE-02**  | Usability       | All UI views shall achieve WCAG 2.1 Level AA colour contrast (≥ 4.5:1) and remain usable across 360 px mobile to 1920 px desktop viewports.                                            |
+| **NFR-AVL-01**  | Availability    | The platform shall achieve ≥ 99.0% uptime during lab evaluation hours (Sat–Thu, 08:00–22:00 BST).                                                                                      |
+| **NFR-REL-01**  | Reliability     | All transplant matching, referral status updates, and audit log writes shall execute within atomic database transactions to prevent partial state updates.                             |
+| **NFR-MNT-01**  | Maintainability | Back-end REST endpoints shall be documented in an OpenAPI 3.0 specification and maintain ≥ 70% unit/integration test coverage.                                                         |
+
+## 5.1 Security and Privacy — STRIDE-lite Analysis
+
+| **Use case**                   | **Threat type (STRIDE)** | **Threat description**                                                                                          | **Mitigation**                                                                                            | **Req ID**                                      |
+|--------------------------------|--------------------------|-----------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------|-------------------------------------------------|
+| User Login & Role Session      | Spoofing                 | Attacker performs credential stuffing or token forgery to impersonate a Medical Professional or Hospital Admin. | Enforce bcrypt hashing, 30-min lockout after 5 failed attempts, signed JWTs, and email verification.      | FR-AUTH-02, FR-AUTH-05, NFR-SEC-01              |
+| Compatibility & Match Override | Tampering                | Unauthorized modification of ABO/HLA values or match scores via manipulated API payloads.                       | TLS 1.2+ encryption, server-side schema validation, role-restricted writes, and audit logging.            | FR-MATCH-01, FR-ADMIN-03, NFR-SEC-02            |
+| Clinical Sign-Off & Referral   | Repudiation              | A clinician or Hospital Admin denies approving a match suggestion or declining a referral.                      | Bind every sign-off and status update to authenticated user ID and UTC timestamp in immutable audit logs. | FR-MATCH-03, FR-REF-03, FR-ADMIN-04             |
+| Donor & Recipient Dossiers     | Information disclosure   | A user from Hospital A queries records belonging to Hospital B or accesses raw PII in research exports.         | Hospital-scoped RBAC middleware on clinical routes and mandatory PII stripping in research repository.    | FR-AUTH-04, FR-ADMIN-02, NFR-SEC-03, NFR-SEC-04 |
+| Deceased Donor Matching API    | Denial of service        | Automated request floods degrade matching endpoints during a time-critical deceased donor workflow.             | Redis-backed API rate limiting per user/IP and database indexing on ABO/HLA matching columns.             | NFR-PERF-02, NFR-AVL-01                         |
+| Admin Verification Endpoints   | Elevation of privilege   | A Donor, Recipient, or staff user calls /admin/hospitals/verify directly via crafted API requests.              | RBAC middleware verifying JWT role claims on all administrative routes; return HTTP 403 and log attempt.  | FR-AUTH-04, FR-HOSP-02, NFR-SEC-03              |
+
+# 6 Project Prioritisation & Strategic Feasibility (MoSCoW, TELOS, SWOT & Sustainability)
+
+## 6.1 MoSCoW Prioritisation Matrix
+
+To manage project scope effectively across the P3–P7 lab milestones and prevent scope creep, all NI-ODTCN features are categorised using the MoSCoW prioritisation method:
+
+| **Priority Category** | **Definition** | **NI-ODTCN Scope Items** |
+| --- | --- | --- |
+| **Must Have** | Critical core features required for a viable, safe, and clinically verifiable Prototype v1 (P3–P4 baseline). | • Role-based authentication & 5-role RBAC (Super Admin, Hospital Admin, Medical Pro, Donor, Recipient)<br>• National & International Hospital registration and verification (3 national + 2 international)<br>• Living & deceased donor intention registration with informed consent & next-of-kin details<br>• Recipient waitlist registration for Kidney and Liver with medical report uploads<br>• ABO/HLA/Crossmatch clinical compatibility engine with mandatory physician sign-off<br>• 2-way and 3-way Paired Kidney Exchange (PKE) cycle detection<br>• Deceased donor case initiation with external brain-death certification ID & family consent gate<br>• National & Cross-Border patient referral workflow with dossier sharing and status tracking<br>• Surgical transplant procedure logging, post-transplant follow-up records, and immutable audit logs |
+| **Should Have** | Important operational and analytical features targeted for P5–P6 integration that significantly enhance clinical coordination. | • Organ retrieval & transportation logistics tracking with Cold Ischemia Time (CIT) 75% threshold alerts<br>• Interactive PKE cycle graph visualization and proposal/rejection workflow for Transplant Coordinators<br>• Automated multi-channel alerts (Email & SMS) for referrals, match reviews, and follow-up schedules<br>• Role-scoped analytical dashboards (national vs. international donation, waitlist, and outcome metrics)<br>• De-identified clinical dataset export repository managed by Super Admin |
+| **Could Have** | Desirable usability and reporting enhancements implemented if schedule capacity permits prior to P7 defence. | • Downloadable PDF clinical referral dossiers and post-transplant discharge summaries<br>• Advanced multi-parameter filtering on hospital capability directories and research datasets<br>• Bilingual interface toggle (English / Bangla) for Donor and Recipient self-service portals |
+| **Won't Have** | Explicitly excluded from Prototype v1 scope to maintain legal, clinical, and schedule boundaries. | • Autonomous brain-death determination, clinical eligibility certification, or automated organ allocation<br>• Live integration with national civil NID registries, customs clearance, or physical courier APIs<br>• Financial billing, payment gateways, or commercial organ compensation modules<br>• Matching workflows for Cornea, Heart, Lung, Pancreas, or Bone Marrow in Prototype v1<br>• Offline-first native mobile apps or real-time wearable IoT telemetry |
+
+## 6.2 TELOS Feasibility Analysis
+
+A structured TELOS feasibility assessment was conducted by Team: The Sages to validate that NI-ODTCN can be designed, built, and demonstrated reliably within the academic and regulatory constraints of CSE 3412:
+
+| **Dimension**   | **Rating**                 | **Feasibility Assessment for NI-ODTCN**                                                                                                                                                                                                                                                                                                                                       |
+|-----------------|----------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Technical**   | Feasible (High)            | The platform uses mature, well-supported technologies (Python/FastAPI or Node.js/Express, MySQL/PostgreSQL, Redis, Bootstrap/React). Graph-based cycle detection (DFS/Tarjan's algorithm) for 2-way/3-way Paired Kidney Exchange and RBAC middleware are well within the team's software engineering capabilities.                                                            |
+| **Economic**    | Feasible (High)            | Academic prototype cost is BDT 0 using open-source tools and free tiers. For post-academic operational sustainability without any organ commercialization, NI-ODTCN aligns with the ethical revenue streams defined in Section 6.4 (hospital network subscriptions, referral coordination administration, de-identified research/analytics access, and institutional grants). |
+| **Legal**       | Feasible (With Guardrails) | Organ transplantation is strictly governed by national organ transplant laws and WHO Guiding Principles against organ trafficking. NI-ODTCN mitigates legal risk by operating strictly as a hospital-verified coordination and decision-support platform, requiring mandatory consent disclaimers, prohibiting financial exchange, and using only synthetic data in v1.       |
+| **Operational** | Feasible (High)            | The system mirrors real-world clinical workflows across 5 distinct user roles without replacing human medical judgment. Role-specific dashboards, clear status lifecycles, and confirmation modals ensure hospital administrators and clinicians can adopt the workflow with minimal training.                                                                                |
+| **Schedule**    | Feasible (Moderate–High)   | Dividing delivery into Major Prototype (P3–P4: core registries, matching, PKE, referrals) and Minor Prototype (P5–P6: CIT logistics, analytics, de-identified research export) across 4 dedicated team members aligns directly with the Fall 2026 lab milestones leading to P7 defence.                                                                                       |
+
+## 6.3 SWOT Analysis
+
+The SWOT matrix below evaluates the internal capabilities and external strategic factors influencing the design and adoption of NI-ODTCN:
+
+| **Quadrant** | **Key Strategic Factors** |
+| --- | --- |
+| **Strengths** | • Unified end-to-end coordination linking living/deceased registries, PKE cycle discovery, cross-border referrals, and post-transplant follow-up in one system.<br>• Strict clinical decision-support boundary ensuring licensed doctors retain final authority.<br>• Strong security architecture featuring hospital-scoped RBAC, AES-256 encryption, and immutable audit trails. |
+| **Weaknesses** | • Prototype v1 relies on synthetic datasets and manual off-platform verification of hospital/physician credentials rather than live regulatory APIs.<br>• Initial scope covers Kidney and Liver workflows only, requiring schema extension for multi-organ support.<br>• Dependent on reliable internet connectivity at participating clinical workstations. |
+| **Opportunities** | • Significant potential to increase living kidney transplant rates through automated 2-way and 3-way Paired Kidney Exchange (PKE) matching.<br>• Streamlines complex international medical referrals with standardized, portable clinical dossiers.<br>• De-identified research repository can support longitudinal transplant outcome studies and public health policy. |
+| **Threats** | • Strict healthcare data privacy regulations and cross-border medical data transfer restrictions require rigorous governance.<br>• Potential user resistance or workflow friction if hospital staff perceive digital logging as extra administrative overhead.<br>• High sensitivity of medical data makes the platform a target for unauthorized access attempts, requiring continuous security hardening. |
+
+## 6.4 Revenue & Sustainability Model
+
+Because NI-ODTCN operates within strict statutory and ethical boundaries governing organ donation and transplantation, the platform strictly prohibits any commission, fee, or commercial transaction tied to organs, donor pledges, or organ allocation. Instead, financial sustainability is achieved through coordination software services, institutional partnerships, and de-identified research licensing:
+
+- **1. B2B Hospital Network Subscriptions —** Partner hospitals (national and international) pay a tiered monthly or annual platform subscription for multi-user clinical workspaces, compatibility decision-support tools, PKE cycle review workflows, and audit-ready coordination logs.
+
+- **2. National & Cross-Border Referral Coordination Fees —** A flat administrative coordination fee may be charged to participating hospitals or referral coordinators for processing structured clinical dossiers, inter-hospital case routing, and cross-border referral tracking — strictly separated from medical treatment and never priced by organ.
+
+- **3. De-Identified Research & Analytics Licensing —** Academic institutions, medical research centres, and public health bodies may obtain licensed access to de-identified clinical datasets (generated via FR-ADMIN-02 with 100% of PII stripped) and aggregated transplant analytics reports (FR-ADMIN-01) for approved longitudinal research.
+
+- **4. Institutional Grants & Public-Health Partnerships —** Public health ministries, healthcare foundations, and institutional partners may fund registry infrastructure pilots, governance reporting, and multi-hospital transplant coordination initiatives.
+
+# 7 Other Requirements
+
+## 7.1 Data Retention
+
+- Active donor registries, recipient waitlists, surgical transplant records, and follow-up records shall be retained throughout active clinical care and archived for at least 10 years.
+
+- Immutable audit logs (FR-ADMIN-03) shall be retained for a minimum of 5 years and shall not be deletable by any role.
+
+- Upon donor or recipient account deletion, personal identifiers shall be anonymised within 30 days while retaining de-identified outcome records for statistical audit.
+
+## 7.2 Backup and Recovery
+
+- Daily incremental backups and weekly full backups of the relational database stored in encrypted object storage.
+
+- Object storage versioning enabled for uploaded medical documents.
+
+- Recovery Point Objective (RPO): ≤ 24 hours; Recovery Time Objective (RTO): ≤ 4 hours.
+
+## 7.3 Legal and Regulatory Compliance
+
+- Registrants must actively accept the Privacy Policy, Ethical Organ Donation Charter, and Medical Disclaimer via unticked checkboxes before account creation.
+
+- System workflows shall enforce non-commercial organ donation rules under the Human Organ Transplantation Act and WHO Guiding Principles.
+
+- Cross-border referrals shall exchange clinical dossiers strictly between accredited hospitals and shall not automate physical organ transport.
+
+## 7.4 Data Migration
+
+Not applicable to v0.1 / v1.0. This is a new platform with no predecessor system. Initial demonstrations will use synthetic datasets representing 3 national hospitals and 2 international hospitals.
+
+## 7.5 Training Requirements
+
+| **User class**       | **Training method**                                                                                    | **Timing**                  |
+|----------------------|--------------------------------------------------------------------------------------------------------|-----------------------------|
+| Super Admin          | System governance manual + 30-minute walkthrough with the development team.                            | Prior to P3 / P7 evaluation |
+| Hospital Admin       | In-app onboarding checklist + 2-page PDF guide on hospital setup, staff accounts, and referral review. | At hospital activation      |
+| Medical Professional | Guided in-app tooltips for compatibility evaluation, PKE cycle graph, and deceased donor workflow.     | At first clinical login     |
+| Donor & Recipient    | 3-step in-app onboarding guide explaining consent disclaimers, report uploads, and referral tracking.  | At initial registration     |
+| Must         | Ref \[1\] Sec 3.16      |
