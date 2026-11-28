@@ -33,6 +33,7 @@
 |-------------|------------|-------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------|
 | 0.1         | 2026-11-20 | Niaz Morshed, Sultanul Arefin, Rukshana Akter Rumi, Samia Hossain | Initial baseline SRS covering Sections 1–7 and Appendices A–C, including MoSCoW, TELOS, SWOT, and Section 6.4 Revenue & Sustainability Model. |
 
+
 # 1 Introduction
 
 ## 1.1 Purpose
@@ -147,6 +148,7 @@ The remainder of this document is organised as follows:
 
 - **Appendices A, B, and C:** analysis and design models (DFD, Use Cases, Activity, Class, Sequence, State Machine, ERD), RTM, glossary, and AI-use disclosure.
 
+
 # 2 Overall Description
 
 ## 2.1 Product Perspective
@@ -250,6 +252,7 @@ The core functional modules of NI-ODTCN are grouped into Major Prototype (P3–P
 
 - D3 — PDF generation library (e.g., ReportLab / WeasyPrint) must be available for exporting referral dossiers and transplant records.
 
+
 # 3 External Interface Requirements
 
 ## 3.1 User Interfaces
@@ -298,6 +301,7 @@ NI-ODTCN is a web-based software platform requiring no specialized medical perip
 - JWT Bearer Authentication: Protected API requests authenticate via signed JWT tokens in the Authorization header.
 
 - Multipart File Upload: Clinical documents transfer over HTTPS multipart/form-data with MIME-type and 10 MB size validation.
+
 
 # 4 Functional Requirements
 
@@ -379,6 +383,7 @@ NI-ODTCN is a web-based software platform requiring no specialized medical perip
 | **FR-ADMIN-03** | The system shall maintain an immutable audit log recording timestamp (UTC), actor user ID, role, action performed, target entity ID, and IP address for all record views and modifications. | Must         | Ref \[1\] Sec 3.16, 5.1 |
 | **FR-ADMIN-04** | The system shall prohibit any user role, including Super Admin, from editing or deleting entries in the audit log table. 
 
+
 # 5 Non-Functional Requirements
 
 | **ID**          | **Category**    | **Requirement**                                                                                                                                                                        |
@@ -405,6 +410,7 @@ NI-ODTCN is a web-based software platform requiring no specialized medical perip
 | Donor & Recipient Dossiers     | Information disclosure   | A user from Hospital A queries records belonging to Hospital B or accesses raw PII in research exports.         | Hospital-scoped RBAC middleware on clinical routes and mandatory PII stripping in research repository.    | FR-AUTH-04, FR-ADMIN-02, NFR-SEC-03, NFR-SEC-04 |
 | Deceased Donor Matching API    | Denial of service        | Automated request floods degrade matching endpoints during a time-critical deceased donor workflow.             | Redis-backed API rate limiting per user/IP and database indexing on ABO/HLA matching columns.             | NFR-PERF-02, NFR-AVL-01                         |
 | Admin Verification Endpoints   | Elevation of privilege   | A Donor, Recipient, or staff user calls /admin/hospitals/verify directly via crafted API requests.              | RBAC middleware verifying JWT role claims on all administrative routes; return HTTP 403 and log attempt.  | FR-AUTH-04, FR-HOSP-02, NFR-SEC-03              |
+
 
 # 6 Project Prioritisation & Strategic Feasibility (MoSCoW, TELOS, SWOT & Sustainability)
 
@@ -453,6 +459,7 @@ Because NI-ODTCN operates within strict statutory and ethical boundaries governi
 - **3. De-Identified Research & Analytics Licensing —** Academic institutions, medical research centres, and public health bodies may obtain licensed access to de-identified clinical datasets (generated via FR-ADMIN-02 with 100% of PII stripped) and aggregated transplant analytics reports (FR-ADMIN-01) for approved longitudinal research.
 
 - **4. Institutional Grants & Public-Health Partnerships —** Public health ministries, healthcare foundations, and institutional partners may fund registry infrastructure pilots, governance reporting, and multi-hospital transplant coordination initiatives.
+
 
 # 7 Other Requirements
 
